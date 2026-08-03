@@ -1,0 +1,25 @@
+Features
+📚 Authentication
+Login / Signup
+JWT Authentication
+📖 Books
+Book List
+Search by Title / Author
+Filter by Category (Programming, Fiction, History, etc.)
+Book Details
+❤️ Favorites
+Add to Favorites
+Remove from Favorites
+📈 Reading Progress
+"Currently Reading"
+Progress (e.g. 40%, 80%)
+Mark as Completed
+⭐ Reviews & Ratings
+Give Rating (1–5)
+Write Review
+Show Average Rating
+View All Reviews
+👤 Profile
+User Profile
+Total Books Read
+Favorite Books Count
