@@ -9,8 +9,8 @@ const Authstacknavigator: FC = () => {
   return (
     <>
       <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-        {/* <AuthStack.Screen name="Login" component={Login} /> */}
-          <AuthStack.Screen name="Signup" component={Signup} />
+        <AuthStack.Screen name="Login" component={Login} />
+          <AuthStack.Screen name="Signup" component={Signup}  />
       </AuthStack.Navigator>
     </>
   );

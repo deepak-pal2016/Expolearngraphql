@@ -8,7 +8,7 @@ const styles = (theme:any) => StyleSheet.create({
         borderWidth: 1,
         borderRadius: hp(1),
         borderColor: Colors.ERROR[100],
-        backgroundColor: Colors.SECONDARY[100],
+       
         width: wp(80),
         alignSelf: 'center',
         flexDirection: 'column',
@@ -22,7 +22,7 @@ const styles = (theme:any) => StyleSheet.create({
     input: {
        bottom:hp(.2),
         color: Colors.SECONDARY[200],
-        ...Typography.BodyMedium14,
+        ...Typography.BodyRegular12,
         paddingHorizontal: hp(5),
         borderRadius: hp(1),
         textAlignVertical:'center'
@@ -67,7 +67,7 @@ const styles = (theme:any) => StyleSheet.create({
     floatlable: {
         color: theme?.text,
         ...Typography.BodyBold13,
-        left: hp(1),
+        left: hp(.6),
         top:hp(.2)
     }
 });

@@ -57,7 +57,7 @@ const Route: FC = () => {
   const getAsync = async () => {
     try {
       let val = await LocalStorage.read("@login");
-      setUserLogin(val);
+      setUserLogin(true);
     } catch (error) {
       console.error("Error fetching user login status:", error);
       setUserLogin("false");

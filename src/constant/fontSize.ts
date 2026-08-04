@@ -36,8 +36,8 @@ const Typography = StyleSheet.create({
 
   H1Bold28: {
     fontFamily: Fonts.InterBold,
-    fontSize: wp(2),
-    lineHeight: 20,
+    fontSize: wp(2.5),
+    lineHeight: 23,
   },
 
   H2SemiBold28: {
@@ -143,7 +143,7 @@ const Typography = StyleSheet.create({
 
   Caption11: {
     fontFamily: Fonts.InterRegular,
-    fontSize: wp(2.8),
+    fontSize: wp(2.5),
     lineHeight: 16,
   },
 

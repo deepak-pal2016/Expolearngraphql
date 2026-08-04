@@ -48,6 +48,7 @@ interface TextInputProps {
   isMultiline?: boolean;
   lefticon?: ImageProps;
   placeholder?: string;
+  backcolor?:string;
 }
 
 const FloatingTextInput: FC<TextInputProps> = ({
@@ -68,6 +69,7 @@ const FloatingTextInput: FC<TextInputProps> = ({
   isMultiline,
   placeholder,
   lefticon,
+  backcolor
 }) => {
   const inputRef = useRef<TextInput>(null);
   const animatedValue = useRef(new Animated.Value(0));
@@ -116,12 +118,14 @@ const FloatingTextInput: FC<TextInputProps> = ({
         style={[
           styles.container,
           style,
+          
           {
             borderColor:
               error && touched && Colors.ERROR[100] ,
             ...Typography.BodyRegular12,
             height: isMultiline ? hp(11) : hp(6.2),
             borderWidth: hp(0.04),
+            backgroundColor: backcolor,
           },
         ]}
       >

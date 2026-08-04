@@ -198,7 +198,7 @@ const Login: FC = () => {
             <View style={styles.inputWrapper}>
               <FloatingTextInput
                 lefticon={Images.ic_lock}
-                style={{ width: wp(80) }}
+                style={{ width: wp(80),  }}
                 label={"Password"}
                 placeholder="Enter your password"
                 value={values.password}
@@ -230,8 +230,7 @@ const Login: FC = () => {
           <DividerWithText title="Or continue with" />
 
           <View
-            style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-          >
+            style={{ flexDirection: "row", justifyContent: "space-evenly" }} >
             <Button
               //@ts-ignore borderRadius:hp(2)
               style={[
@@ -265,14 +264,7 @@ const Login: FC = () => {
               icon={Images.ic_apple}
             />
           </View>
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "row",
-              marginTop: hp(4),
-            }}
-          >
+          <View style={styles.alreadyaccount}>
             <TextView style={styles.accounttext}>
               Don't have an account?
             </TextView>

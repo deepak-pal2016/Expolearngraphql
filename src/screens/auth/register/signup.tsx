@@ -55,6 +55,7 @@ const Signup: FC = () => {
   const [isSecure, setIsSecure] = useState<boolean>(true);
   const { theme, themetoggle } = useContext(ThemeContext);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
+  const [privacy, setPrivacy] = useState<boolean>(false);
   const styles = loginStyles(currentTheme);
 
   const {
@@ -140,7 +141,7 @@ const Signup: FC = () => {
         showsVerticalScrollIndicator={false}
       >
         <View style={[styles.container, { paddingTop: insets.top }]}>
-          <View style={{ alignSelf: "center", top: hp(2) }}>
+          <View style={{ alignSelf: "center", top: hp(1) }}>
             <Image
               source={Images.ic_logo}
               style={{
@@ -148,12 +149,20 @@ const Signup: FC = () => {
                 height: wp(50),
                 resizeMode: "contain",
                 alignSelf: "center",
-                top: hp(2),
+                top: hp(0),
               }}
             />
-            <View style={{ justifyContent:'center',alignItems:'flex-start', left:hp(5) }}>
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "flex-start",
+                left: hp(5),
+              }}
+            >
               <TextView style={styles.apptitle}>Create Account</TextView>
-              <TextView style={[styles.apptitle, { ...Typography.BodyBold14 }]}>
+              <TextView
+                style={[styles.apptitle, { ...Typography.BodyRegular13 }]}
+              >
                 Sign up and start your reading journey..
               </TextView>
             </View>
@@ -214,6 +223,38 @@ const Signup: FC = () => {
                 onChangeText={(text: any) => setFieldValue("password", text)}
               />
             </View>
+
+            <View
+              style={[
+                styles.inputWrapper,
+                {
+                  flexDirection: "row",
+                  top: hp(1),
+                  justifyContent: "space-evenly",
+                  alignSelf: "flex-start",
+                },
+              ]}
+            >
+              <Pressable onPress={() => setPrivacy((prev) => !prev)}>
+                <Image
+                  source={privacy ? Images.ic_check : Images.ic_uncheck}
+                  style={{
+                    width: wp(5),
+                    height: wp(5),
+                    resizeMode: "contain",
+                    tintColor: Colors.PRIMARY[100],
+                  }}
+                />
+              </Pressable>
+              <TextView style={styles.policytext}>
+                I agree to the{" "}
+                <TextView style={styles.termstext}>Terms & Conditions</TextView>{" "}
+                and{" "}
+                <TextView style={styles.termstext}>
+                  Privacy Policy.
+                </TextView>{" "}
+              </TextView>
+            </View>
           </View>
           <Button
             style={styles.buttonview}
@@ -222,14 +263,57 @@ const Signup: FC = () => {
               color: Colors.SECONDARY[100],
               ...Typography.BodyMedium14,
             }}
-            title={"SIGN UP"}
-            gradientColors={[
-              Colors.PRIMARY[100],
-              Colors.PRIMARY[200],
-            ]}
+            title={"Sign up"}
+            gradientColors={[Colors.PRIMARY[100], Colors.PRIMARY[200]]}
           />
 
-          {/* <DividerWithText title="" /> */}
+          <DividerWithText title="Or continue with" />
+
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+          >
+            <Button
+              //@ts-ignore borderRadius:hp(2)
+              style={[
+                styles.buttonview,
+                { width: wp(35), borderWidth: 0.5, borderRadius: hp(1) },
+              ]}
+              onPress={() => console.log("ddf")}
+              titleStyle={{
+                color: Colors.SECONDARY[200],
+                ...Typography.BodyMedium14,
+              }}
+              title={"Google"}
+              gradientColors={[Colors.SECONDARY[100], Colors.SECONDARY[100]]}
+              lefticon={true}
+              icon={Images.ic_google}
+            />
+            <Button
+              //@ts-expect-error
+              style={[
+                styles.buttonview,
+                { width: wp(35), borderWidth: 0.5, borderRadius: hp(1) },
+              ]}
+              onPress={() => console.log("ddf")}
+              titleStyle={{
+                color: Colors.SECONDARY[200],
+                ...Typography.BodyMedium14,
+              }}
+              title={"Apple"}
+              gradientColors={[Colors.SECONDARY[100], Colors.SECONDARY[100]]}
+              lefticon={true}
+              icon={Images.ic_apple}
+            />
+          </View>
+
+          <View style={styles.alreadyaccount}>
+            <TextView style={styles.accounttext}>
+              Already have an account?
+            </TextView>
+            <Pressable onPress={() => navigation.navigate("Login")}>
+              <TextView style={styles.singuptitle}>Login</TextView>
+            </Pressable>
+          </View>
         </View>
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>

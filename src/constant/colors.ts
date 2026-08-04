@@ -4,10 +4,10 @@ const Colors = {
     100: '#f17601', // background, light cards
     200: '#f07401', // hover, secondary bg
     300: '#E8F1FD', // buttons
-    400: '#7B61FF', // button pressed
+    400: '#f4f4f8', // button pressed
     500: '#4A90E2',
     600: '#F5A623',
-    700: '#fcfcfd',
+    700: '#fdfcfd',
     800: '#f3f4fa',
     900: '#eceef7',
     1000:'#f0f3f9'

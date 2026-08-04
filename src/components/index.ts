@@ -18,6 +18,7 @@ import DividerWithText from '@components/DividerWithText/DividerWithText';
 import { LightTheme } from '@components/theme/theme';
 import { DarkTheme } from '@components/theme/theme';
 import Attachment from '@components/Chatatachement/attachment';
+import PopularBooks from '@components/Popularbooks/popularbooks';
 
 export {
   TextView,
@@ -38,7 +39,8 @@ export {
   DividerWithText,
   DarkTheme,
   LightTheme,
-  Attachment
+  Attachment,
+  PopularBooks
   
   
 };
