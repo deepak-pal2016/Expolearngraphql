@@ -38,6 +38,7 @@ import {
   LightTheme,
   PopularBooks,
   TextView,
+  Recommneded
 } from "@components/index";
 import { Colors, Icon, Typography, Images } from "@constant/index";
 import { cardShadow } from "@constant/index";
@@ -110,8 +111,6 @@ export const categories = [
 ];
 
 const Dashboard: FC = () => {
-  const EMPTY_TASKS: any[] = [];
-  const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch<any>();
   const { showLoader, hideLoader } = CommonLoader();
   const navigation = useNavigation<DashboardscreenNavigationType>();
@@ -119,269 +118,7 @@ const Dashboard: FC = () => {
   const [selectcatid, setSelectCatId] = useState<number>(0);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = dashboardstyle(currentTheme);
-  const alltasklist =
-    useSelector((state: any) => state?.getalltask?.data?.data) ?? EMPTY_TASKS;
 
-  const pagesize = alltasklist?.length > 10 ? 5 : 3;
-  const { data, loading, hasMore, loadMore } = UsePagination(
-    alltasklist,
-    pagesize,
-  );
-
-  const { userData, setIsLoggedIn } = useContext<UserData>(UserDataContext);
-  const [tasklist, setTaskList] = useState<any>([]);
-  const pendingtask = useMemo(() => {
-    return (alltasklist || []).filter(
-      (item: any) => item?.status === "pending",
-    );
-  }, [alltasklist]);
-
-  const completetask = useMemo(() => {
-    return (alltasklist || []).filter(
-      (item: any) => item?.status === "completed",
-    );
-  }, [alltasklist]);
-
-  useEffect(() => {
-    fetchuserlist();
-  }, [userData?.email]);
-
-  useEffect(() => {
-    setTaskList([
-      {
-        taskname: "Total Task",
-        taskcount: alltasklist?.length || 0,
-        color: Colors.PRIMARY[600],
-      },
-      {
-        taskname: "Completed",
-        taskcount: completetask.length || 0,
-        color: Colors.PRIMARY[500],
-      },
-      {
-        taskname: "Pending",
-        taskcount: pendingtask.length || 0,
-        color: Colors.PRIMARY[100],
-      },
-    ]);
-  }, [alltasklist]);
-
-  const onrefresh = useCallback(async () => {
-    showLoader();
-    try {
-      await fetchuserlist();
-    } catch (error) {
-      console.log("error in refresh", error);
-    } finally {
-      hideLoader();
-    }
-  }, []);
-
-  const fetchuserlist = async () => {
-    try {
-      showLoader();
-      const resp: any = await dispatch(Getallusertask(userData?._id));
-
-      if (resp?.payload?.status === true) {
-        await dispatch(Getuserlist(userData?.email)).unwrap();
-      } else if (
-        resp?.payload === "Token expired or invalid" ||
-        resp?.payload === "Token expired"
-      ) {
-        handlelogout(userData);
-      } else {
-        showError("somehting went wrong,  down refresh.");
-      }
-    } catch (error: any) {
-      if (error?.status === 401) {
-        showError(error?.message);
-        handlelogout(userData);
-      } else {
-      }
-    } finally {
-      hideLoader();
-    }
-  };
-
-  // useEffect(() => {
-  //   const unsubscribe = messaging().onMessage(async remoteMessage => {
-  //     //  Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
-  //     dispatch(Getallusertask(userData?._id));
-  //     await notifee.displayNotification({
-  //       title: remoteMessage.notification?.title,
-  //       body: remoteMessage.notification?.body,
-
-  //       android: {
-  //         channelId: 'default',
-  //         smallIcon: 'ic_notification',
-  //         color: Colors.PRIMARY[100],
-  //         pressAction: {
-  //           id: 'default',
-  //         },
-  //         importance: 4,
-  //         sound: 'default',
-  //       },
-  //     });
-  //   });
-
-  //   return unsubscribe;
-  // }, []);
-
-  const handlelogout = async (userData: any) => {
-    try {
-      // const response: any = dispatch(Logoutuser(userData)).unwrap();
-      // console.log(response, 'logout response');
-      setIsLoggedIn(false);
-      await LocalStorage.save("@login", false);
-      await LocalStorage.flushQuestionKeys();
-    } catch (error: any) {
-      console.log(error, "logout error");
-      showError(error?.message || "Something went wrong");
-    }
-  };
-
-  const renderItem = ({ item, index }: { item: any; index: number }) => {
-    return (
-      <View
-        style={{
-          marginTop: hp(1),
-          backgroundColor: Colors.SECONDARY[100],
-          alignSelf: "center",
-          paddingHorizontal: wp(5),
-          width: wp(88),
-          borderRadius: 12,
-          ...cardShadow,
-          paddingVertical: hp(2),
-          flexDirection: "column",
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          {/* Left Icon */}
-          <View
-            style={{
-              width: wp(8),
-              height: wp(8),
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Image
-              source={Images.ic_check}
-              style={{
-                width: wp(9),
-                height: wp(9),
-                resizeMode: "contain",
-                tintColor: item?.priorityColor,
-              }}
-            />
-          </View>
-
-          {/* Task Info */}
-          <View
-            style={{
-              flex: 1,
-              marginLeft: wp(4),
-              top: hp(0.6),
-            }}
-          >
-            <TextView
-              style={{
-                color: Colors.SECONDARY[200],
-                ...Typography.BodyRegular15,
-              }}
-            >
-              {(item?.title || "").charAt(0).toUpperCase() +
-                (item?.title || "").slice(1)}
-            </TextView>
-
-            <TextView
-              style={{
-                color: Colors.FLOATINGINPUT[100],
-                ...Typography.BodyRegular13,
-                marginTop: hp(0.4),
-              }}
-            >
-              {moment(item?.createdAt).format("DD/MM/YYYY")}
-            </TextView>
-          </View>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-evenly",
-              paddingHorizontal: hp(1),
-            }}
-          >
-            {/* Right Avatar */}
-            <Image source={Images.ic_userimg} style={styles.avatarview} />
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "flex-end",
-            marginTop: hp(1),
-          }}
-        >
-          <View
-            style={{
-              backgroundColor:
-                item?.status === "completed"
-                  ? Colors.PRIMARY[500]
-                  : Colors.PRIMARY[100],
-              borderRadius: hp(2),
-              right: hp(1),
-              alignSelf: "flex-end",
-              top: hp(1),
-              paddingHorizontal: wp(3),
-              paddingVertical: hp(1),
-              bottom: hp(0),
-            }}
-          >
-            <TextView
-              style={{
-                color: Colors.SECONDARY[100],
-                ...Typography.BodyRegular12,
-              }}
-            >
-              {item?.status?.charAt(0).toUpperCase() + item?.status?.slice(1)}
-            </TextView>
-          </View>
-          <TouchableOpacity
-            style={{
-              backgroundColor: Colors.PRIMARY[100],
-              borderRadius: hp(2),
-              left: hp(1),
-              alignSelf: "flex-end",
-              top: hp(1),
-              paddingHorizontal: wp(3),
-              paddingVertical: hp(1),
-              bottom: hp(0),
-            }}
-            activeOpacity={0.7}
-            onPress={() => {
-              navigation.navigate("Taskdetails" as any, { detailstask: item });
-            }}
-          >
-            <TextView
-              style={{
-                color: Colors.SECONDARY[100],
-                ...Typography.BodyRegular12,
-              }}
-            >
-              View Details
-            </TextView>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
   const insets = useSafeAreaInsets();
   return (
     <View
@@ -517,6 +254,7 @@ const Dashboard: FC = () => {
             </View>
           </View>
           <PopularBooks />
+            <Recommneded />
 
           {/* <Pressable
           onPress={() => navigation.navigate("Tasklist")}

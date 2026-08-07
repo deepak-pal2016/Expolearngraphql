@@ -1,22 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useContext, useEffect, useState } from 'react';
-import { View, TouchableOpacity } from 'react-native';
-import createStyles from '@styles/headerStyles';
-import { Colors, Icon, Typography } from '@constant/index';
-import { useNavigation } from '@react-navigation/native';
-import TextView from '@components/TextView/textView';
+import React, { useContext, useEffect, useState } from "react";
+import { View, TouchableOpacity } from "react-native";
+import createStyles from "@styles/headerStyles";
+import { Colors, Icon, Typography } from "@constant/index";
+import { useNavigation } from "@react-navigation/native";
+import TextView from "@components/TextView/textView";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
-} from '@constant/dimentions';
+} from "@constant/dimentions";
 // import { Logout, Signout } from '@redux/slices/authSlice';
-import { useAppDispatch } from '@redux/store/hooks';
-import { CommonLoader } from '@components/CommonLoader/commonLoader';
-import { showError, showSuccess } from '@components/Flashmessge';
-import { useFormik } from 'formik';
-import { ThemeContext } from '../../context/themeContext';
-import { DarkTheme, LightTheme } from '@components/theme/theme';
-
+import { useAppDispatch } from "@redux/store/hooks";
+import { CommonLoader } from "@components/CommonLoader/commonLoader";
+import { showError, showSuccess } from "@components/Flashmessge";
+import { useFormik } from "formik";
+import { ThemeContext } from "../../context/themeContext";
+import { DarkTheme, LightTheme } from "@components/theme/theme";
 
 interface headerProps {
   showicons: boolean;
@@ -25,10 +24,9 @@ interface headerProps {
   flexview?: number;
   onBackPress?: () => void;
   screenname?: string;
-  receiverid: any;
-  onVideocallpress?:()=> void
-  onAudiocallpress?:() => void
 
+  onVideocallpress?: () => void;
+  onAudiocallpress?: () => void;
 }
 
 const Header: React.FC<headerProps> = ({
@@ -38,24 +36,26 @@ const Header: React.FC<headerProps> = ({
   title,
   onBackPress,
   screenname,
-  receiverid,
   onVideocallpress,
-  onAudiocallpress
+  onAudiocallpress,
 }) => {
   const [isNavigating, setIsNavigating] = useState(false);
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
   const { theme } = useContext(ThemeContext);
   // const { showLoader, hideLoader } = CommonLoader();
-  const currentTheme = theme === 'light' ? LightTheme : DarkTheme;
+  const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = createStyles(currentTheme);
 
   return (
     <View
       style={[
         styles.container,
-        { flex: flexview, backgroundColor:
-                    theme === 'dark' ? currentTheme?.background : Colors.SECONDARY[100] },
+        {
+          flex: flexview,
+          backgroundColor:
+            theme === "dark" ? currentTheme?.background : Colors.SECONDARY[100],
+        },
       ]}
     >
       {showicons && (
@@ -74,22 +74,24 @@ const Header: React.FC<headerProps> = ({
         //   </View>
         // </TouchableOpacity>
         <View style={styles.usercontainer}>
-          <TouchableOpacity onPress={onVideocallpress} activeOpacity={0.7} style={styles.radiusview}>
-            <Icon
-              family="Ionicons"
-              name="videocam-outline"
-              size={23}
-              color={Colors.SECONDARY[200]}
-            />
+          <TouchableOpacity
+            onPress={onVideocallpress}
+            activeOpacity={0.7}
+            style={styles.radiusview}
+          >
+            <TextView style={{ fontSize: wp(5), color: "#111827" }}>♥</TextView>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={onAudiocallpress} activeOpacity={0.7} style={styles.radiusview}>
-            <Icon
-              family="Ionicons"
-              name="call-outline"
-              size={23}
-              color={Colors.SECONDARY[200]}
-            />
+          <TouchableOpacity
+            onPress={onAudiocallpress}
+            activeOpacity={0.7}
+            style={styles.radiusview}
+          >
+            <TextView
+              style={{ fontSize: wp(6), color: "#111827", marginTop: -5 }}
+            >
+              ⋮
+            </TextView>
           </TouchableOpacity>
         </View>
       )}
@@ -119,7 +121,7 @@ const Header: React.FC<headerProps> = ({
             style={[
               styles.headerTitle,
               //@ts-ignore
-              title?.length > 33 && Typography.BodyRegular16,
+              title?.length > 33 && Typography.BodyBold14,
             ]}
           >
             {title}

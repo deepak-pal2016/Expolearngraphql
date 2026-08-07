@@ -19,6 +19,8 @@ import { LightTheme } from '@components/theme/theme';
 import { DarkTheme } from '@components/theme/theme';
 import Attachment from '@components/Chatatachement/attachment';
 import PopularBooks from '@components/Popularbooks/popularbooks';
+import Recommneded from '@components/Recommendedbooks/recomended';
+import TopResults from '@components/Recommendedbooks/topresults';
 
 export {
   TextView,
@@ -40,7 +42,9 @@ export {
   DarkTheme,
   LightTheme,
   Attachment,
-  PopularBooks
+  PopularBooks,
+  Recommneded,
+  TopResults
   
   
 };
