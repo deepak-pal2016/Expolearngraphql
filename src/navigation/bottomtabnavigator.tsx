@@ -2,33 +2,35 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { FC, useContext } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from '@constant/fonticons';
-import Colors from '@constant/colors';
+import React, { FC, useContext } from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Icon from "@constant/fonticons";
+import Colors from "@constant/colors";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
-} from '@constant/dimentions';
+} from "@constant/dimentions";
 
-import { Dashboard, Addtask, Profile, Users } from '@screens/index';
-import { cardShadow, Typography } from '@constant/index';
-import { ThemeContext } from '../context/themeContext';
-import { DarkTheme, LightTheme, TextView } from '@components/index';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { HomeStackProps } from 'src/@types';
-import { View } from 'react-native';
+import { Dashboard, Search, Profile } from "@screens/index";
+import { cardShadow, Typography } from "@constant/index";
+import { ThemeContext } from "../context/themeContext";
+import { DarkTheme, LightTheme, TextView } from "@components/index";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { HomeStackProps } from "src/@types";
+import { View } from "react-native";
+
+const Size = 20
 
 const Tab = createBottomTabNavigator();
 type BottomTabNavigatorscreenNavigationType = NativeStackNavigationProp<
   HomeStackProps,
-  'BottomTabNavigator'
+  "BottomTabNavigator"
 >;
 
 const BottomTabNavigator: FC = () => {
   const { theme } = useContext(ThemeContext);
-  const currentTheme = theme === 'light' ? LightTheme : DarkTheme;
-
+  const currentTheme = theme === "light" ? LightTheme : DarkTheme;
+  
   const TabIcon = ({
     focused,
     children,
@@ -37,17 +39,17 @@ const BottomTabNavigator: FC = () => {
     children: React.ReactNode;
   }) => {
     return (
-      <View style={{ alignItems: 'center' }}>
+      <View style={{ alignItems: "center" }}>
         {focused && (
           <View
             style={{
-              position: 'absolute',
+              position: "absolute",
               top: hp(-1),
               width: wp(10),
               height: hp(0.3),
               borderRadius: hp(1),
-              borderBottomLeftRadius:hp(3),
-              borderBottomRightRadius:hp(3),
+              borderBottomLeftRadius: hp(3),
+              borderBottomRightRadius: hp(3),
               backgroundColor: Colors.PRIMARY[100],
             }}
           />
@@ -68,15 +70,17 @@ const BottomTabNavigator: FC = () => {
           borderTopEndRadius: hp(0),
           borderTopStartRadius: hp(0),
           borderColor:
-            theme === 'dark' ? currentTheme?.background : Colors.FLOATINGINPUT[100],
+            theme === "dark"
+              ? currentTheme?.background
+              : Colors.FLOATINGINPUT[100],
           backgroundColor:
-            theme === 'dark' ? currentTheme?.background : Colors.SECONDARY[100],
+            theme === "dark" ? currentTheme?.background : Colors.SECONDARY[100],
           ...cardShadow,
         },
       }}
     >
       <Tab.Screen
-        name="Task"
+        name="Home"
         component={Dashboard}
         options={{
           tabBarLabel: ({ focused }) => {
@@ -89,71 +93,7 @@ const BottomTabNavigator: FC = () => {
                   ...Typography.BodyRegular12,
                 }}
               >
-                Task
-              </TextView>
-            );
-          },
-
-          tabBarIcon: ({ color, size, focused }) => (
-            <TabIcon focused={focused}>
-              <Icon
-                family="Ionicons"
-                name="time-outline"
-                size={22}
-                color={focused ? currentTheme?.text : Colors.SECONDARY[100]}
-              />
-            </TabIcon>
-          ),
-        }}
-      />
-
-      <Tab.Screen
-        name="Chat"
-        component={Users}
-        options={{
-          tabBarLabel: ({ focused }) => {
-            return (
-              <TextView
-                style={{
-                  color: focused
-                    ? currentTheme?.text
-                    : Colors.FLOATINGINPUT[100],
-                  ...Typography.BodyRegular12,
-                }}
-              >
-                Chat
-              </TextView>
-            );
-          },
-
-          tabBarIcon: ({ color, size, focused }) => (
-            <TabIcon focused={focused}>
-              <Icon
-                family="Ionicons"
-                name="chatbubble-outline"
-                size={22}
-                color={focused ? currentTheme?.text : Colors.SECONDARY[100]}
-              />
-            </TabIcon>
-          ),
-        }}
-      />
-
-      <Tab.Screen
-        name="Add Task"
-        component={Addtask}
-        options={{
-          tabBarLabel: ({ focused }) => {
-            return (
-              <TextView
-                style={{
-                  color: focused
-                    ? currentTheme?.text
-                    : Colors.FLOATINGINPUT[100],
-                  ...Typography.BodyRegular12,
-                }}
-              >
-                Add Task
+                Home
               </TextView>
             );
           },
@@ -162,9 +102,105 @@ const BottomTabNavigator: FC = () => {
             <TabIcon focused={focused}>
               <Icon
                 family="FontAwesome"
-                name="tasks"
-                size={22}
-                color={focused ? currentTheme?.text : Colors.SECONDARY[100]}
+                name="home"
+                size={Size}
+                color={focused ? currentTheme?.text : Colors.SECONDARY[500]}
+              />
+            </TabIcon>
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Search"
+        component={Search}
+        options={{
+          tabBarLabel: ({ focused }) => {
+            return (
+              <TextView
+                style={{
+                  color: focused
+                    ? currentTheme?.text
+                    : Colors.FLOATINGINPUT[100],
+                  ...Typography.BodyRegular12,
+                }}
+              >
+                Search
+              </TextView>
+            );
+          },
+
+          tabBarIcon: ({ color, size, focused }) => (
+            <TabIcon focused={focused}>
+              <Icon
+                family="FontAwesome"
+                name="search"
+                size={Size}
+                color={focused ? currentTheme?.text : Colors.SECONDARY[400]}
+              />
+            </TabIcon>
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="mybooks"
+        component={Search}
+        options={{
+          tabBarLabel: ({ focused }) => {
+            return (
+              <TextView
+                style={{
+                  color: focused
+                    ? currentTheme?.text
+                    : Colors.FLOATINGINPUT[100],
+                  ...Typography.BodyRegular12,
+                }}
+              >
+                My Books
+              </TextView>
+            );
+          },
+
+          tabBarIcon: ({ color, size, focused }) => (
+            <TabIcon focused={focused}>
+              <Icon
+                family="FontAwesome"
+                name="book"
+                size={Size}
+                color={focused ? currentTheme?.text : Colors.SECONDARY[400]}
+              />
+            </TabIcon>
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="favorie"
+        component={Search}
+        options={{
+          tabBarLabel: ({ focused }) => {
+            return (
+              <TextView
+                style={{
+                  color: focused
+                    ? currentTheme?.text
+                    : Colors.FLOATINGINPUT[100],
+                  ...Typography.BodyRegular12,
+                }}
+              >
+                Favorite
+              </TextView>
+            );
+          },
+
+          tabBarIcon: ({ color, size, focused }) => (
+            <TabIcon focused={focused}>
+              <Icon
+                family="FontAwesome"
+                name="heart-o"
+                size={Size}
+                color={focused ? currentTheme?.text : Colors.SECONDARY[400]}
               />
             </TabIcon>
           ),
@@ -195,8 +231,8 @@ const BottomTabNavigator: FC = () => {
               <Icon
                 family="Ionicons"
                 name="person-outline"
-                size={22}
-                color={focused ? currentTheme?.text : Colors.SECONDARY[100]}
+                size={Size}
+                color={focused ? currentTheme?.text : Colors.SECONDARY[400]}
               />
             </TabIcon>
           ),

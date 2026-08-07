@@ -4,6 +4,7 @@ import Dashboard from "@screens/home/dashboard/dashboard";
 import Signup from '@screens/auth/register/signup'
 import Search from "@screens/home/search/search";
 import Bookdetails from "@screens/home/books/booksdetails";
+import Profile from "@screens/home/profile/profile";
 
 
-export {Login,Dashboard, Signup,Search,Bookdetails}
+export {Login,Dashboard, Signup,Search,Bookdetails,Profile}

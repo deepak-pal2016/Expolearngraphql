@@ -38,6 +38,7 @@ const Header: React.FC<headerProps> = ({
   screenname,
   onVideocallpress,
   onAudiocallpress,
+
 }) => {
   const [isNavigating, setIsNavigating] = useState(false);
   const navigation = useNavigation();

@@ -150,7 +150,7 @@ const Dashboard: FC = () => {
           >
             <View style={{ flexDirection: "row" }}>
               <TextView style={styles.greeings}>
-                Hello, {`${userData?.name}`}
+                Hello, {`${'Deepak pal'}`}
               </TextView>
               <Image source={Images.ic_hi} style={styles.hiimg} />
             </View>

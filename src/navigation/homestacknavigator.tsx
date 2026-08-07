@@ -9,12 +9,12 @@ const Homestacknavigator: FC = () => {
   const HomeStack = createNativeStackNavigator<HomeStackProps>();
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
-      {/* <HomeStack.Screen
+      <HomeStack.Screen
         name="BottomTabNavigator"
         component={BottomTabNavigator}
-      /> */}
-      {/* <HomeStack.Screen name="Dashboard" component={Dashboard} /> */}
-      {/* <HomeStack.Screen name="Search" component={Search} /> */}
+      /> 
+      <HomeStack.Screen name="Dashboard" component={Dashboard} />
+       <HomeStack.Screen name="Search" component={Search} />
       <HomeStack.Screen name="Bookdetails" component={Bookdetails} />
     </HomeStack.Navigator>
   );
