@@ -11,7 +11,7 @@ import {
   heightPercentageToDP as hp,
 } from "@constant/dimentions";
 
-import { Dashboard, Search, Profile } from "@screens/index";
+import { Dashboard, Search, Profile, MyBooks } from "@screens/index";
 import { cardShadow, Typography } from "@constant/index";
 import { ThemeContext } from "../context/themeContext";
 import { DarkTheme, LightTheme, TextView } from "@components/index";
@@ -19,7 +19,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackProps } from "src/@types";
 import { View } from "react-native";
 
-const Size = 20
+const Size = 20;
 
 const Tab = createBottomTabNavigator();
 type BottomTabNavigatorscreenNavigationType = NativeStackNavigationProp<
@@ -30,7 +30,7 @@ type BottomTabNavigatorscreenNavigationType = NativeStackNavigationProp<
 const BottomTabNavigator: FC = () => {
   const { theme } = useContext(ThemeContext);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
-  
+
   const TabIcon = ({
     focused,
     children,
@@ -44,7 +44,7 @@ const BottomTabNavigator: FC = () => {
           <View
             style={{
               position: "absolute",
-              top: hp(-1),
+              top: hp(-1.1),
               width: wp(10),
               height: hp(0.3),
               borderRadius: hp(1),
@@ -69,10 +69,10 @@ const BottomTabNavigator: FC = () => {
           paddingBottom: hp(2),
           borderTopEndRadius: hp(0),
           borderTopStartRadius: hp(0),
-          borderColor:
-            theme === "dark"
-              ? currentTheme?.background
-              : Colors.FLOATINGINPUT[100],
+          // borderColor:
+          //   theme === "dark"
+          //     ? currentTheme?.background
+          //     : Colors.FLOATINGINPUT[100],
           backgroundColor:
             theme === "dark" ? currentTheme?.background : Colors.SECONDARY[100],
           ...cardShadow,
@@ -88,9 +88,9 @@ const BottomTabNavigator: FC = () => {
               <TextView
                 style={{
                   color: focused
-                    ? currentTheme?.text
-                    : Colors.FLOATINGINPUT[100],
-                  ...Typography.BodyRegular12,
+                    ? Colors.PRIMARY[100]
+                    : currentTheme?.text,
+                  ...Typography.ButtonText16,
                 }}
               >
                 Home
@@ -104,7 +104,7 @@ const BottomTabNavigator: FC = () => {
                 family="FontAwesome"
                 name="home"
                 size={Size}
-                color={focused ? currentTheme?.text : Colors.SECONDARY[500]}
+               color={focused ? Colors.PRIMARY[100] : currentTheme?.text}
               />
             </TabIcon>
           ),
@@ -120,9 +120,9 @@ const BottomTabNavigator: FC = () => {
               <TextView
                 style={{
                   color: focused
-                    ? currentTheme?.text
-                    : Colors.FLOATINGINPUT[100],
-                  ...Typography.BodyRegular12,
+                    ? Colors.PRIMARY[100]
+                    : currentTheme?.text,
+                  ...Typography.ButtonText16,
                 }}
               >
                 Search
@@ -136,7 +136,7 @@ const BottomTabNavigator: FC = () => {
                 family="FontAwesome"
                 name="search"
                 size={Size}
-                color={focused ? currentTheme?.text : Colors.SECONDARY[400]}
+                color={focused ? Colors.PRIMARY[100] : currentTheme?.text}
               />
             </TabIcon>
           ),
@@ -145,16 +145,16 @@ const BottomTabNavigator: FC = () => {
 
       <Tab.Screen
         name="mybooks"
-        component={Search}
+        component={MyBooks}
         options={{
           tabBarLabel: ({ focused }) => {
             return (
               <TextView
                 style={{
                   color: focused
-                    ? currentTheme?.text
-                    : Colors.FLOATINGINPUT[100],
-                  ...Typography.BodyRegular12,
+                    ? Colors.PRIMARY[100]
+                    : currentTheme?.text,
+                  ...Typography.ButtonText16,
                 }}
               >
                 My Books
@@ -168,7 +168,7 @@ const BottomTabNavigator: FC = () => {
                 family="FontAwesome"
                 name="book"
                 size={Size}
-                color={focused ? currentTheme?.text : Colors.SECONDARY[400]}
+                color={focused ? Colors.PRIMARY[100] : currentTheme?.text}
               />
             </TabIcon>
           ),
@@ -182,11 +182,11 @@ const BottomTabNavigator: FC = () => {
           tabBarLabel: ({ focused }) => {
             return (
               <TextView
-                style={{
+               style={{
                   color: focused
-                    ? currentTheme?.text
-                    : Colors.FLOATINGINPUT[100],
-                  ...Typography.BodyRegular12,
+                    ? Colors.PRIMARY[100]
+                    : currentTheme?.text,
+                  ...Typography.ButtonText16,
                 }}
               >
                 Favorite
@@ -200,7 +200,7 @@ const BottomTabNavigator: FC = () => {
                 family="FontAwesome"
                 name="heart-o"
                 size={Size}
-                color={focused ? currentTheme?.text : Colors.SECONDARY[400]}
+               color={focused ? Colors.PRIMARY[100] : currentTheme?.text}
               />
             </TabIcon>
           ),
@@ -214,11 +214,11 @@ const BottomTabNavigator: FC = () => {
           tabBarLabel: ({ focused }) => {
             return (
               <TextView
-                style={{
+               style={{
                   color: focused
-                    ? currentTheme?.text
-                    : Colors.FLOATINGINPUT[100],
-                  ...Typography.BodyRegular12,
+                    ? Colors.PRIMARY[100]
+                    : currentTheme?.text,
+                  ...Typography.ButtonText16,
                 }}
               >
                 Profile
@@ -232,7 +232,7 @@ const BottomTabNavigator: FC = () => {
                 family="Ionicons"
                 name="person-outline"
                 size={Size}
-                color={focused ? currentTheme?.text : Colors.SECONDARY[400]}
+                color={focused ? Colors.PRIMARY[100] : currentTheme?.text}
               />
             </TabIcon>
           ),

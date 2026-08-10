@@ -10,7 +10,9 @@ export type HomeStackProps = {
   BottomTabNavigator:undefined;
   Dashboard:undefined;
   Search:undefined;
-  Bookdetails:undefined
+  Bookdetails:undefined;
+  Mybooks:undefined;
+  Profile:undefined;
   
 
 }

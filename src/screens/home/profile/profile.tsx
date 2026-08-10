@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   PermissionsAndroid,
   Platform,
+  ScrollView,
 } from "react-native";
 import React, { FC, useContext, useEffect, useState } from "react";
 import {
@@ -36,14 +37,13 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { cardShadow, Colors, Icon, Images, Typography } from "@constant/index";
 import moment from "moment";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import createstyles from "@styles/profileStyles";
+import profileStyles from "@/styles/profileStyles";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackProps } from "src/@types";
 import { UseDispatch, useDispatch, useSelector } from "react-redux";
 import { Loginuser, Logout, Logoutuser } from "@redux/slices/authSlice";
 import { UserData, UserDataContext } from "../../../context/userDataContext";
 import { LocalStorage } from "@helpers/localstorage";
-import { logout } from "@services/rtkquery/fetures/auth/authslice";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { Socket } from "socket.io-client";
 import { Uploaduserimage } from "@redux/slices/userSlice";
@@ -54,13 +54,27 @@ type ProfilescreenNavigationType = NativeStackNavigationProp<
   "Profile"
 >;
 
-const Profile: FC = () => {
+interface ProfileScreenProps {
+  onReadingStatistics?: () => void;
+  onAchievements?: () => void;
+  onReadingReminders?: () => void;
+  onSettings?: () => void;
+  onLogout?: () => void;
+}
+
+const Profile: FC<ProfileScreenProps> = ({
+  onReadingStatistics,
+  onAchievements,
+  onReadingReminders,
+  onSettings,
+  onLogout,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const insets = useSafeAreaInsets();
   const { showLoader, hideLoader } = CommonLoader();
   const { theme, themetoggle } = useContext(ThemeContext);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
-  const styles = createstyles(currentTheme);
+  const styles = profileStyles(currentTheme);
   const [selectedFile, setSelectedFile] = useState<any>([]);
   const { setIsLoggedIn, setUserData, userData } =
     useContext<UserData>(UserDataContext);
@@ -202,6 +216,39 @@ const Profile: FC = () => {
     }
   };
 
+  const menuItems = [
+    {
+      title: "Reading Statistics",
+      icon: "bar-chart",
+      family: "FontAwesome" as const,
+      onPress: onReadingStatistics,
+    },
+    {
+      title: "Achievements",
+      icon: "trophy",
+      family: "FontAwesome5" as const,
+      onPress: onAchievements,
+    },
+    {
+      title: "Reading Reminders",
+      icon: "bell-o",
+      family: "FontAwesome" as const,
+      onPress: onReadingReminders,
+    },
+    {
+      title: "Settings",
+      icon: "cog",
+      family: "FontAwesome" as const,
+      onPress: onSettings,
+    },
+    {
+      title: "Logout",
+      icon: "sign-out",
+      family: "FontAwesome" as const,
+      onPress: onLogout,
+    },
+  ];
+
   return (
     <View
       style={[
@@ -213,166 +260,86 @@ const Profile: FC = () => {
         },
       ]}
     >
-      <Header
-        showheader={false}
-        title=""
-        showicons={false}
-      />
-      <View style={{ marginTop: hp(7) }}>
-        <View style={styles.conentview}>
-          <View style={{ flexDirection: "column" }}>
-            <Image
-              source={
-                userData?.profileImage
-                  ? { uri: userData?.profileImage }
-                  : Images?.ic_userimg
-              }
-              style={styles.imgview}
-            />
-          </View>
-          <Pressable
-            onPress={() => setShowAttachmentModal(true)}
-            style={{
-              width: wp(7),
-              height: hp(3.5),
-              borderRadius: hp(2),
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: Colors.PRIMARY[100],
-              position: "absolute",
-              left: hp(16),
-              bottom: hp(0),
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* Profile Header */}
+        <View style={styles.profileHeader}>
+          <Image
+            source={{
+              uri: "https://i.pravatar.cc/150?img=12",
             }}
-          >
-            <Icon
-              family="Ionicons"
-              name="camera"
-              size={18}
-              color={currentTheme?.text}
-            />
-          </Pressable>
-          <View style={{ flexDirection: "column" }}>
-            <TextView style={styles.nametext}>{userData?.name}</TextView>
-            <TextView style={styles.emailtext}>{userData?.email}</TextView>
-          </View>
-        </View>
-        <View style={styles.itemview}>
-          <TouchableOpacity style={styles.menuitem}>
-            <View
-              style={{
-                alignSelf: "flex-start",
-                alignItems: "center",
-                flexDirection: "row",
-              }}
-            >
-              <Image
-                source={Images.ic_edit}
-                style={{
-                  width: wp(5),
-                  height: hp(5),
-                  resizeMode: "contain",
-                  tintColor: "white",
-                }}
-              />
-              <TextView
-                style={{
-                  color: Colors.SECONDARY[100],
-                  ...Typography.BodyRegular13,
-                  left: hp(1),
-                }}
-              >
-                Edit Profile
-              </TextView>
-            </View>
-            <Icon
-              family="FontAwesome6"
-              name="chevron-right"
-              color={currentTheme?.text}
-              size={20}
-            />
-          </TouchableOpacity>
+            style={styles.avatar}
+          />
 
-          <View style={styles.menuitem}>
-            <View
-              style={{
-                alignSelf: "flex-start",
-                alignItems: "center",
-                flexDirection: "row",
-              }}
-            >
-              <Image
-                source={Images.ic_mode}
-                style={{
-                  width: wp(5),
-                  height: hp(5),
-                  resizeMode: "contain",
-                  tintColor: "white",
-                }}
-              />
-              <TextView
-                style={{
-                  color: Colors.SECONDARY[100],
-                  ...Typography.BodyRegular13,
-                  left: hp(1),
-                }}
-              >
-                Dark Mode
-              </TextView>
+          <TextView style={styles.name}>Deepak Pal</TextView>
+          <TextView style={styles.email}>deepak@example.com</TextView>
+
+          {/* Statistics */}
+          <View style={styles.statsContainer}>
+            <View style={styles.statItem}>
+              <TextView style={styles.statTitle}>Books Read</TextView>
+              <TextView style={styles.statValue}>24</TextView>
             </View>
-            <Switch onChange={() => themetoggle()} value={theme === "dark"} />
+
+            <View style={styles.statDivider} />
+
+            <View style={styles.statItem}>
+              <TextView style={styles.statTitle}>Reviews</TextView>
+              <TextView style={styles.statValue}>18</TextView>
+            </View>
+
+            <View style={styles.statDivider} />
+
+            <View style={styles.statItem}>
+              <TextView style={styles.statTitle}>Favorites</TextView>
+              <TextView style={styles.statValue}>32</TextView>
+            </View>
           </View>
         </View>
 
-        <View style={[styles.itemview, { top: hp(2) }]}>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={styles.logoutview}
-            onPress={() => handlelogout()}
-          >
-            <Image
-              source={Images.ic_logout}
-              style={{
-                width: wp(5),
-                height: hp(5),
-                resizeMode: "contain",
-                tintColor: "white",
-              }}
-            />
-            <TextView
-              style={{
-                color: Colors.SECONDARY[100],
-                ...Typography.BodyRegular13,
-                alignSelf: "center",
-                left: hp(1),
-              }}
+        {/* Menu */}
+        <View style={styles.menuContainer}>
+          {menuItems.map((item, index) => (
+            <TouchableOpacity
+              key={item.title}
+              activeOpacity={0.7}
+              style={[
+                styles.menuItem,
+                index === menuItems.length - 1 && styles.lastMenuItem,
+              ]}
+              onPress={item.onPress}
             >
-              Logout
-            </TextView>
-          </TouchableOpacity>
+              <View style={styles.menuIconContainer}>
+                {item.family === "FontAwesome5" ? (
+                  <Icon
+                    family="FontAwesome"
+                    name={item.icon}
+                    size={18}
+                    color="#17213A"
+                  />
+                ) : (
+                  <Icon
+                    family="FontAwesome"
+                    name={item.icon}
+                    size={18}
+                    color={index === 0 ? "#5531E8" : "#17213A"}
+                  />
+                )}
+              </View>
+
+              <TextView style={styles.menuTitle}>{item.title}</TextView>
+              <Icon
+                family="FontAwesome"
+                name="angle-right"
+                size={20}
+                color="#9CA3AF"
+              />
+            </TouchableOpacity>
+          ))}
         </View>
-      </View>
-      <Attachment
-        visible={showAttachmentModal}
-        onClose={() => setShowAttachmentModal(false)}
-        onGallery={pickGallery}
-        onCamera={openCamera}
-        icon={""}
-        title={""}
-        color={""}
-        onPress={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        family={undefined}
-        onDocument={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        onLocation={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-        onContact={function (): void {
-          throw new Error("Function not implemented.");
-        }}
-      />
+      </ScrollView>
     </View>
   );
 };

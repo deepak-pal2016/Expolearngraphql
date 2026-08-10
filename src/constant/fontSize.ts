@@ -110,7 +110,7 @@ const Typography = StyleSheet.create({
 
   BodyMedium13: {
     fontFamily: Fonts.InterMedium,
-    fontSize: wp(3.5),
+    fontSize: wp(2.1),
     lineHeight: 20,
   },
 
@@ -156,8 +156,8 @@ const Typography = StyleSheet.create({
   /* ----------------- BUTTON TEXT ----------------- */
 
   ButtonText16: {
-    fontFamily: Fonts.InterMedium,
-    fontSize: wp(4),
+    fontFamily: Fonts.InterRegular,
+    fontSize: wp(2.1),
     lineHeight: 24,
   },
 });
