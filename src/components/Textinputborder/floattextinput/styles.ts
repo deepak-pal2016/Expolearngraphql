@@ -41,7 +41,7 @@ const styles = (theme:any) => StyleSheet.create({
         marginLeft: hp(.5),
         color: Colors.ERROR[100],
         maxWidth: wp(90),
-        ...Typography.BodyMedium13,
+        ...Typography.BodyRegular12,
     },
     secureBtn: {
         position: 'absolute',

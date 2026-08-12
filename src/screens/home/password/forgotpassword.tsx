@@ -5,10 +5,16 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
-import { View, Image, TouchableWithoutFeedback, Pressable } from "react-native";
+import {
+  View,
+  Image,
+  TouchableWithoutFeedback,
+  Pressable,
+  ImageBackground,
+} from "react-native";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import loginStyles from "../../styles/loginStyles";
+import loginStyles from "../../../styles/loginStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Colors, Images, Typography } from "@constant/index";
 import {
@@ -23,8 +29,9 @@ import {
   LightTheme,
   DarkTheme,
   CommonLoader,
+  Header,
 } from "@components/index";
-import { ThemeContext } from "../../context/themeContext";
+import { ThemeContext } from "../../../context/themeContext";
 import { AuthStackProps } from "src/@types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
@@ -42,19 +49,18 @@ import { useDispatch } from "react-redux";
 import { useAppDispatch } from "@redux/store/hooks";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { LocalStorage } from "@helpers/localstorage";
-import { UserDataContext } from "../../context";
-import { UserData } from "../../context/userDataContext";
+import { UserDataContext } from "../../../context";
+import { UserData } from "../../../context/userDataContext";
 import { useLoginMutation } from "@services/rtkquery/apis/authapi";
-import Socket from "@services/socket/socket";
-type LoginscreenNavigationType = NativeStackNavigationProp<
+type ForgotpasswordNavigationType = NativeStackNavigationProp<
   AuthStackProps,
-  "Login"
+  "Forgotpassword"
 >;
 
-const Login: FC = () => {
+const Forgotpassword: FC = () => {
   // const [login, { data, error, isLoading }] = useLoginMutation();
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation<LoginscreenNavigationType>();
+  const navigation = useNavigation<ForgotpasswordNavigationType>();
   const dispatch = useAppDispatch();
   const { setIsLoggedIn, setUserData } = useContext<UserData>(UserDataContext);
   const { showLoader, hideLoader } = CommonLoader();
@@ -160,125 +166,79 @@ const Login: FC = () => {
         extraScrollHeight={hp(1)}
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.container, { paddingTop: insets.top }]}>
-          <Image source={Images.ic_logo} style={styles.logostyles} />
-          <View
-            style={{
-              justifyContent: "center",
-              alignItems: "flex-start",
-              left: hp(5),
-            }}
-          >
-            <View style={{ flexDirection: "row" }}>
-              <TextView style={styles.apptitle}>Welcome Back!</TextView>
-              <Image source={Images.ic_hi} style={styles.hiimg} />
-            </View>
-            <TextView
-              style={[styles.apptitle, { ...Typography.BodyRegular13 }]}
-            >
-              Login to continue your reading jouney..
-            </TextView>
-          </View>
+        <ImageBackground style={{ flex: 1 }} source={Images.ic_passwordimg}>
+          <View style={[styles.container, { paddingTop: insets.top }]}>
+            <Header showheader={true} showicons={false} />
 
-          <View style={styles.panel}>
-            <View style={styles.inputWrapper}>
-              <FloatingTextInput
-                lefticon={Images.ic_email}
-                style={{ width: wp(80), elevation: 0 }}
-                label={"Email"}
-                placeholder="Enter your email"
-                value={values.email}
-                error={errors.email}
-                touched={touched.email}
-                onChangeText={(text: any) =>
-                  setFieldValue("email", text.replace(/\s/g, "").toLowerCase())
-                }
-              />
+            <Image source={Images.ic_logo} style={styles.logostyles} />
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "flex-start",
+                left: hp(5),
+              }}
+            >
+              <View style={{ flexDirection: "row" }}>
+                <TextView style={styles.apptitle}>Forgot Password?</TextView>
+              </View>
+              <TextView
+                style={[
+                  styles.apptitle,
+                  { ...Typography.BodyRegular12, textAlign: "left" },
+                ]}
+              >
+                Enter your email and we'll send you a link {"\n"}to reset your
+                password.
+              </TextView>
             </View>
-            <View style={[styles.inputWrapper, { flexDirection: "column" }]}>
-              <FloatingTextInput
-                lefticon={Images.ic_lock}
-                style={{ width: wp(80), elevation: 0 }}
-                label={"Password"}
-                placeholder="Enter your password"
-                value={values.password}
-                error={errors.password}
-                touched={touched.password}
-                isSecure={isSecure}
-                onSecureTextPress={() => setIsSecure(!isSecure)}
-                onChangeText={(text: any) =>
-                  setFieldValue("password", text.replace(/\s/g, ""))
-                }
-              />
-              <Pressable onPress={()=> navigation.navigate('Forgotpassword')} style={{ alignSelf: "flex-end" }}>
-                <TextView style={{color:Colors.PRIMARY[100],...Typography.BodyBold13, padding:hp(1)}}>Forgot Password?</TextView>
+
+            <View style={styles.panel}>
+              <View style={styles.inputWrapper}>
+                <FloatingTextInput
+                  lefticon={Images.ic_email}
+                  style={{ width: wp(80), elevation: 0 }}
+                  label={"Email"}
+                  placeholder="Enter your email"
+                  value={values.email}
+                  error={errors.email}
+                  touched={touched.email}
+                  onChangeText={(text: any) =>
+                    setFieldValue(
+                      "email",
+                      text.replace(/\s/g, "").toLowerCase(),
+                    )
+                  }
+                />
+              </View>
+            </View>
+            <Button
+              style={styles.buttonview}
+              onPress={() => handleSubmit()}
+              titleStyle={{
+                color: Colors.SECONDARY[100],
+                ...Typography.BodyBold15,
+              }}
+              title={"Send Reset Link"}
+              gradientColors={[
+                Colors.PRIMARY[100],
+                Colors.PRIMARY[100],
+                // Colors.PRIMARY[300],
+              ]}
+            />
+
+            <View style={styles.alreadyaccount}>
+              <TextView style={styles.accounttext}>
+                Remember your password?
+              </TextView>
+              <Pressable onPress={() => navigation.navigate("Login")}>
+                <TextView style={styles.singuptitle}>Login</TextView>
               </Pressable>
             </View>
           </View>
-          <Button
-            style={styles.buttonview}
-            onPress={() => handleSubmit()}
-            titleStyle={{
-              color: Colors.SECONDARY[100],
-              ...Typography.BodyBold15,
-            }}
-            title={"Log in"}
-            gradientColors={[
-              Colors.PRIMARY[100],
-              Colors.PRIMARY[100],
-              // Colors.PRIMARY[300],
-            ]}
-          />
-
-          <DividerWithText title="Or continue with" />
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-          >
-            <Button
-              //@ts-ignore borderRadius:hp(2)
-              style={[
-                styles.buttonview,
-                { width: wp(35), borderWidth: 0.5, borderRadius: hp(1) },
-              ]}
-              onPress={() => console.log("ddf")}
-              titleStyle={{
-                color: Colors.SECONDARY[200],
-                ...Typography.BodyMedium14,
-              }}
-              title={"Google"}
-              gradientColors={[Colors.SECONDARY[100], Colors.SECONDARY[100]]}
-              lefticon={true}
-              icon={Images.ic_google}
-            />
-            <Button
-              //@ts-expect-error
-              style={[
-                styles.buttonview,
-                { width: wp(35), borderWidth: 0.5, borderRadius: hp(1) },
-              ]}
-              onPress={() => console.log("ddf")}
-              titleStyle={{
-                color: Colors.SECONDARY[200],
-                ...Typography.BodyMedium14,
-              }}
-              title={"Apple"}
-              gradientColors={[Colors.SECONDARY[100], Colors.SECONDARY[100]]}
-              lefticon={true}
-              icon={Images.ic_apple}
-            />
-          </View>
-          <View style={styles.alreadyaccount}>
-            <TextView style={styles.accounttext}>
-              Don't have an account?
-            </TextView>
-            <Pressable onPress={() => navigation.navigate("Signup")}>
-              <TextView style={styles.singuptitle}>Sign up</TextView>
-            </Pressable>
-          </View>
-        </View>
+        </ImageBackground>
       </KeyboardAwareScrollView>
     </TouchableWithoutFeedback>
   );
 };
 
-export default Login;
+export default Forgotpassword;

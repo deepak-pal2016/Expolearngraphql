@@ -24,19 +24,19 @@ const Typography = StyleSheet.create({
 
   H1Bold30: {
     fontFamily: Fonts.InterBold,
-    fontSize: wp(4),
+    fontSize: wp(3),
     lineHeight: 30,
   },
 
   H1Bold29: {
     fontFamily: Fonts.InterBold,
-    fontSize: wp(3),
+    fontSize: wp(2.5),
     lineHeight: 25,
   },
 
   H1Bold28: {
     fontFamily: Fonts.InterBold,
-    fontSize: wp(2.5),
+    fontSize: wp(2),
     lineHeight: 23,
   },
 

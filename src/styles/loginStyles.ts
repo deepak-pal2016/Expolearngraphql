@@ -48,7 +48,7 @@ const loginstyles = (theme: any) =>
     },
     accounttext: {
       color: theme?.text,
-      ...Typography.BodyMedium13,
+      ...Typography.H1Bold29,
     },
     policytext: {
       color: Colors.SECONDARY[200],

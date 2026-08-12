@@ -17,7 +17,8 @@ const Images = {
   ic_google: require("@assets/icons/google.png"),
   ic_apple: require("@assets/icons/apple.png"),
   ic_user: require("@assets/icons/user.png"),
-  ic_search:require("@assets/icons/search.png")
+  ic_search:require("@assets/icons/search.png"),
+  ic_passwordimg:require('@assets/images/passwordimg.png')
 };
 
 export default Images;

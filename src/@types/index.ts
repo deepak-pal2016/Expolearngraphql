@@ -1,7 +1,8 @@
 export type AuthStackProps = {
   Login: undefined;
   Splash:undefined;
-  Signup:undefined
+  Signup:undefined;
+  Forgotpassword:undefined;
   //   Splash:undefined,
 };
 
