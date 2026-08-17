@@ -38,22 +38,16 @@ import {
   LightTheme,
   PopularBooks,
   TextView,
-  Recommneded
+  Recommneded,
 } from "@components/index";
 import { Colors, Icon, Typography, Images } from "@constant/index";
 import { cardShadow } from "@constant/index";
 import { ThemeContext } from "../../../context/themeContext";
-import { useDispatch, useSelector } from "react-redux";
-import { Getuserlist } from "@redux/slices/userSlice";
 import { UserData, UserDataContext } from "../../../context/userDataContext";
 import { LocalStorage } from "@helpers/localstorage";
 import { UsePagination } from "../../../hooks/usepagination";
-import { Logoutuser } from "@redux/slices/authSlice";
 import { showError, showSuccess } from "@components/Flashmessge";
-import { Getallusertask } from "@redux/slices/taskSlice";
-// import messaging from '@react-native-firebase/messaging';
-// import notifee from '@notifee/react-native';
-import moment from "moment";
+
 type DashboardscreenNavigationType = NativeStackNavigationProp<
   HomeStackProps,
   "Dashboard"
@@ -111,18 +105,19 @@ export const categories = [
 ];
 
 const Dashboard: FC = () => {
-  const dispatch = useDispatch<any>();
   const { showLoader, hideLoader } = CommonLoader();
   const navigation = useNavigation<DashboardscreenNavigationType>();
   const { theme, themetoggle } = useContext(ThemeContext);
   const [selectcatid, setSelectCatId] = useState<number>(0);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = dashboardstyle(currentTheme);
-
+  const { setIsLoggedIn, setUserData, userData } = useContext<UserData>(UserDataContext);
+  // console.log(userData,'userData');
+  
   const insets = useSafeAreaInsets();
   return (
     <View
-      style={[
+      style={[  
         styles.container,
         {
           paddingTop: insets.top,
@@ -131,7 +126,6 @@ const Dashboard: FC = () => {
         },
       ]}
     >
-      
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -150,7 +144,7 @@ const Dashboard: FC = () => {
           >
             <View style={{ flexDirection: "row" }}>
               <TextView style={styles.greeings}>
-                Hello, {`${'Deepak pal'}`}
+                Hello, {`${userData?.name}`}
               </TextView>
               <Image source={Images.ic_hi} style={styles.hiimg} />
             </View>
@@ -254,7 +248,7 @@ const Dashboard: FC = () => {
             </View>
           </View>
           <PopularBooks />
-            <Recommneded />
+          <Recommneded />
 
           {/* <Pressable
           onPress={() => navigation.navigate("Tasklist")}

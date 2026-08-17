@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect } from "react";
-import { Provider } from "react-redux";
-import { store } from "@redux/store/store";
+import Client from './src/graphqls/client'
+import {ApolloProvider} from '@apollo/client/react';
 import Route from "./src/routes/index";
 import { CommonAlertProvider } from "@components/CommonAlertModal/commonAlertModal";
 import { CommonLoaderProvider } from "@components/CommonLoader/commonLoader";
@@ -10,8 +10,6 @@ import { ThemeProvider } from "./src/context/index";
 import FlashMessage from "react-native-flash-message";
 import { UserDataContextProvider } from "./src/context/index";
 import { LogBox, PermissionsAndroid, Platform } from "react-native";
-// import messaging from '@react-native-firebase/messaging';
-import Appwrapwer from "./src/context/appwrapper";
 import { useFonts } from "expo-font";
 import {
   Inter_400Regular,
@@ -119,13 +117,12 @@ const App = () => {
   // };
 
   return (
-    <Provider store={store}>
+    <ApolloProvider client={Client}>
       {/* <PaperProvider> */}
       <ThemeProvider>
         <UserDataContextProvider>
           <CommonLoaderProvider>
             <CommonAlertProvider>
-              <Appwrapwer />
               <Route />
               <FlashMessage position="bottom" />
             </CommonAlertProvider>
@@ -133,7 +130,8 @@ const App = () => {
         </UserDataContextProvider>
       </ThemeProvider>
       {/* </PaperProvider> */}
-    </Provider>
+      </ApolloProvider>
+
   );
 };
 

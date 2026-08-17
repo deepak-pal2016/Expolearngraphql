@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useContext, useEffect, useState } from "react";
 import { View, TouchableOpacity } from "react-native";
-import createStyles from "@styles/headerStyles";
+import createStyles from "../../styles/headerStyles";
 import { Colors, Icon, Typography } from "@constant/index";
 import { useNavigation } from "@react-navigation/native";
 import TextView from "@components/TextView/textView";
@@ -10,7 +10,6 @@ import {
   heightPercentageToDP as hp,
 } from "@constant/dimentions";
 // import { Logout, Signout } from '@redux/slices/authSlice';
-import { useAppDispatch } from "@redux/store/hooks";
 import { CommonLoader } from "@components/CommonLoader/commonLoader";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { useFormik } from "formik";
@@ -42,7 +41,6 @@ const Header: React.FC<headerProps> = ({
 }) => {
   const [isNavigating, setIsNavigating] = useState(false);
   const navigation = useNavigation();
-  const dispatch = useAppDispatch();
   const { theme } = useContext(ThemeContext);
   // const { showLoader, hideLoader } = CommonLoader();
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
@@ -55,7 +53,7 @@ const Header: React.FC<headerProps> = ({
         {
           flex: flexview,
           backgroundColor:
-            theme === "dark" ? currentTheme?.background : Colors.SECONDARY[100],
+            theme === "dark" ? currentTheme?.background : Colors.PRIMARY[100],
         },
       ]}
     >
@@ -113,7 +111,7 @@ const Header: React.FC<headerProps> = ({
             <Icon
               family="FontAwesome6"
               name="chevron-left"
-              color={currentTheme?.text}
+              color={currentTheme?.background}
               size={20}
             />
           </TouchableOpacity>
@@ -122,7 +120,7 @@ const Header: React.FC<headerProps> = ({
             style={[
               styles.headerTitle,
               //@ts-ignore
-              title?.length > 33 && Typography.BodyBold14,
+              {color:currentTheme?.background}
             ]}
           >
             {title}

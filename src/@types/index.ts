@@ -14,6 +14,8 @@ export type HomeStackProps = {
   Bookdetails:undefined;
   Mybooks:undefined;
   Profile:undefined;
+  Favoritebooks:undefined;
+  Addbooks:undefined;
   
 
 }

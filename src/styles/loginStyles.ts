@@ -51,13 +51,14 @@ const loginstyles = (theme: any) =>
       ...Typography.H1Bold29,
     },
     policytext: {
-      color: Colors.SECONDARY[200],
-      ...Typography.H1Bold28,
-      left: 5,
+      color: Colors.SECONDARY[500],
+      ...Typography.H1Bold29,
+      left: 9,
+      bottom:2
     },
     termstext: {
       color: Colors.PRIMARY[100],
-      ...Typography.H1Bold28,
+      ...Typography.H1Bold29,
     },
     alreadyaccount: {
       justifyContent: "center",
@@ -65,6 +66,7 @@ const loginstyles = (theme: any) =>
       flexDirection: "row",
       marginTop: hp(2),
     },
+    widthtextinput: { width: wp(80), elevation: 0, },
   });
 
 export default loginstyles;

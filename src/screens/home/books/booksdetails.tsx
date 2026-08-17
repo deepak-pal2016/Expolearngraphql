@@ -43,7 +43,6 @@ import {
 } from "@components/index";
 import { Colors, Icon, Typography, Images } from "@constant/index";
 import { ThemeContext } from "../../../context/themeContext";
-import { useDispatch, useSelector } from "react-redux";
 import { UserData, UserDataContext } from "../../../context/userDataContext";
 import searchstyles from "@/styles/searchStyles";
 import bookStyles from "@/styles/booksStyles";
@@ -55,7 +54,6 @@ type BookdetailsNavigationType = NativeStackNavigationProp<
 >;
 
 const Bookdetails: FC = () => {
-  const dispatch = useDispatch<any>();
   const { showLoader, hideLoader } = CommonLoader();
   const navigation = useNavigation<BookdetailsNavigationType>();
   const { theme, themetoggle } = useContext(ThemeContext);

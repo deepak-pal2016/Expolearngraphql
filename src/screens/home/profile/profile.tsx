@@ -40,15 +40,11 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import profileStyles from "@/styles/profileStyles";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackProps } from "src/@types";
-import { UseDispatch, useDispatch, useSelector } from "react-redux";
-import { Loginuser, Logout, Logoutuser } from "@redux/slices/authSlice";
 import { UserData, UserDataContext } from "../../../context/userDataContext";
 import { LocalStorage } from "@helpers/localstorage";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { Socket } from "socket.io-client";
-import { Uploaduserimage } from "@redux/slices/userSlice";
 import * as ImagePicker from "expo-image-picker";
-import { AppDispatch } from "@redux/store/store";
 type ProfilescreenNavigationType = NativeStackNavigationProp<
   HomeStackProps,
   "Profile"
@@ -69,7 +65,6 @@ const Profile: FC<ProfileScreenProps> = ({
   onSettings,
   onLogout,
 }) => {
-  const dispatch = useDispatch<AppDispatch>();
   const insets = useSafeAreaInsets();
   const { showLoader, hideLoader } = CommonLoader();
   const { theme, themetoggle } = useContext(ThemeContext);
@@ -101,9 +96,7 @@ const Profile: FC<ProfileScreenProps> = ({
 
   const handlelogout = async () => {
     try {
-      await dispatch(Logout());
-      (Socket as any).disconnect?.();
-      setIsLoggedIn(false);
+
     } catch (error: any) {
       console.log(error, "logout error");
       showError(error?.message || "Something went wrong");
@@ -245,7 +238,7 @@ const Profile: FC<ProfileScreenProps> = ({
       title: "Logout",
       icon: "sign-out",
       family: "FontAwesome" as const,
-      onPress: onLogout,
+      onPress: handlelogout,
     },
   ];
 

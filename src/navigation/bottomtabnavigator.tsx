@@ -11,7 +11,7 @@ import {
   heightPercentageToDP as hp,
 } from "@constant/dimentions";
 
-import { Dashboard, Search, Profile, MyBooks } from "@screens/index";
+import { Dashboard, Search, Profile, MyBooks,Favoritebooks } from "@screens/index";
 import { cardShadow, Typography } from "@constant/index";
 import { ThemeContext } from "../context/themeContext";
 import { DarkTheme, LightTheme, TextView } from "@components/index";
@@ -176,8 +176,8 @@ const BottomTabNavigator: FC = () => {
       />
 
       <Tab.Screen
-        name="favorie"
-        component={Search}
+        name="favorite"
+        component={Favoritebooks}
         options={{
           tabBarLabel: ({ focused }) => {
             return (

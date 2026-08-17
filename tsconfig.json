@@ -15,7 +15,9 @@
       "@helpers/*": ["src/helpers/*"],
       "@services/*":["src/services"],
       "@navigation/*":["src/navigation"],
-      "@styles/*":["src/styles"]
+      "@styles/*":["src/styles"],
+      "@graphqls/*":["src/graphqls"],
+      "@zustand/*":["src/zustand"]
     }
   }
 }

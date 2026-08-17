@@ -17,20 +17,13 @@ import * as Network from "expo-network";
 // import SplashScreen from 'react-native-splash-screen';
 import { CommonLoader, CommonAlertModal } from "@components/index";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useDispatch, useSelector } from "react-redux";
-import { Userauthenticate } from "@redux/slices/authSlice";
-import { AppDispatch } from "@redux/store/store";
-// import messaging from '@react-native-firebase/messaging';
-// import notifee from '@notifee/react-native';
 // import Socket from '@services/socket/socket';
 import { navigationRef } from "../utils/NavigationService";
 
 const Route: FC = () => {
   const [userLogin, setUserLogin] = useState<any>(undefined);
-  const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn } = useContext<UserData>(UserDataContext);
   const { showAlert, hideAlert } = CommonAlertModal();
-  const loginState = useSelector((state: any) => state.auth.data);
   const { userData, setIsLoggedIn } = useContext<UserData>(UserDataContext);
 
   // useEffect(() => {

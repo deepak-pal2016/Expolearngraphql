@@ -5,7 +5,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
-import { View, Image, TouchableWithoutFeedback, Pressable } from "react-native";
+import {
+  View,
+  Image,
+  TouchableWithoutFeedback,
+  Pressable,
+  Platform,
+} from "react-native";
 import React, { FC, useContext, useEffect, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import loginStyles from "../../styles/loginStyles";
@@ -29,39 +35,36 @@ import { AuthStackProps } from "src/@types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
-import { SignInValidationSchema } from "@helpers/validations";
-import { Loginuser } from "@redux/slices/authSlice";
-// import {
-//   getMessaging,
-//   getToken,
-//   requestPermission,
-//   onTokenRefresh,
-// } from '@react-native-firebase/messaging';
-// import { getApp } from '@react-native-firebase/app';
-import { useDispatch } from "react-redux";
-import { useAppDispatch } from "@redux/store/hooks";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { LocalStorage } from "@helpers/localstorage";
 import { UserDataContext } from "../../context";
 import { UserData } from "../../context/userDataContext";
-import { useLoginMutation } from "@services/rtkquery/apis/authapi";
-import Socket from "@services/socket/socket";
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
+import { useMutation } from "@apollo/client/react";
+import { LOGIN_USER } from "@/graphqls/mutations/auth";
+import useAuthStore from "@/store/authStore";
+import { SignInValidationSchema } from "@/helpers/validations";
 type LoginscreenNavigationType = NativeStackNavigationProp<
   AuthStackProps,
   "Login"
 >;
 
 const Login: FC = () => {
-  // const [login, { data, error, isLoading }] = useLoginMutation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<LoginscreenNavigationType>();
-  const dispatch = useAppDispatch();
   const { setIsLoggedIn, setUserData } = useContext<UserData>(UserDataContext);
   const { showLoader, hideLoader } = CommonLoader();
+  const [loginUser, { loading }] = useMutation(LOGIN_USER);
+  const login = useAuthStore((state) => state.login);
   const { theme, themetoggle } = useContext(ThemeContext);
   const [isSecure, setIsSecure] = useState<boolean>(true);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = loginStyles(currentTheme);
+
+ useEffect(() => {
+  getFCMToken();
+}, []);
 
   const { values, errors, touched, handleSubmit, handleChange, setFieldValue } =
     useFormik({
@@ -70,44 +73,17 @@ const Login: FC = () => {
         email: "",
         password: "",
       },
-      onSubmit: async (data: any) => {
-        const token = await getfcmtoken();
-        const addwihtfmcdta = { ...data, fcmtoken: token };
-        showLoader();
-        // try {  rtk query code
-        //   const response: any = await login(addwihtfmcdta).unwrap();
-        //   console.log(response?.success, '==addwihtfmcdta==', response?.data);
-        //   if (response?.success === true) {
-        //     await LocalStorage.save('@user', response?.data);
-        //     await LocalStorage.save('@login', true);
-        //     setUserData(response?.data)
-        //     showSuccess('Login Successfully');
-        //   } else {
-        //     showError('Login Failed try again..');
-        //   }
-        // } catch (error: any) {
-        //   console.log(error, 'error==');
-        // } finally {
-        //   hideLoader();
-        // }
+      onSubmit: async (datas: any) => {
         try {
-          const response: any = await dispatch(
-            Loginuser(addwihtfmcdta),
-          ).unwrap();
-          if (response?.success === true) {
-            await LocalStorage.save("@user", response?.data);
-            await LocalStorage.save("@token", response?.data?.token);
-            await LocalStorage.save("@login", true);
-            setIsLoggedIn(true);
-            setUserData(response?.data);
-            if (response?.data?._id) {
-              Socket.connect();
-              Socket.emit("user_online", response?.data?._id);
-            }
-            showSuccess("Login Successfully");
-          } else {
-            showError(response?.message || "Login failed");
-          }
+          const token = await getFCMToken();
+          const addwihtfmcdta = { ...datas, fcmtoken: token };
+          showLoader();
+          console.log(token, "addwihtfmcdta");
+
+          const { data } = await loginUser({
+            variables: addwihtfmcdta,
+          });
+          console.log(addwihtfmcdta, "LOGIN RESPONSE:", data);
         } catch (error: any) {
           console.log("ERROR FULL:", error);
           showError("Login Failed");
@@ -128,24 +104,49 @@ const Login: FC = () => {
       },
     });
 
-  // const getfcmtoken = async () => {
-  //   const app = getApp();
-  //   const messageingInstance = getMessaging(app);
+  const getFCMToken = async () => {
+    try {
+      if (!Device.isDevice) {
+        console.log("Physical device required");
+        return null;
+      }
 
-  //   const authstatus = await requestPermission(messageingInstance);
-  //   const enabled = authstatus === 1 || authstatus === 2;
-  //   if (!enabled) {
-  //     console.log('permission not granted');
-  //     return;
-  //   }
+      // Android notification channel
+      if (Platform.OS === "android") {
+        await Notifications.setNotificationChannelAsync("default", {
+          name: "default",
+          importance: Notifications.AndroidImportance.MAX,
+        });
+      }
 
-  //   const token = await getToken(messageingInstance);
-  //   return token;
+      // Permission
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
 
-  //   // onTokenRefresh(messageingInstance, newtoken => {
-  //   //   console.log('refresh token', newtoken);
-  //   // });
-  // };
+      let finalStatus = existingStatus;
+
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+
+        finalStatus = status;
+      }
+
+      if (finalStatus !== "granted") {
+        console.log("Notification permission denied");
+        return null;
+      }
+
+      const tokenResponse = await Notifications.getDevicePushTokenAsync();
+
+      console.log("TOKEN TYPE =>", tokenResponse.type);
+      console.log("FCM TOKEN =>", tokenResponse.data);
+
+      return tokenResponse.data;
+    } catch (error) {
+      console.log("FCM TOKEN ERROR =>", error);
+      return null;
+    }
+  };
 
   return (
     <TouchableWithoutFeedback>
@@ -210,8 +211,19 @@ const Login: FC = () => {
                   setFieldValue("password", text.replace(/\s/g, ""))
                 }
               />
-              <Pressable onPress={()=> navigation.navigate('Forgotpassword')} style={{ alignSelf: "flex-end" }}>
-                <TextView style={{color:Colors.PRIMARY[100],...Typography.BodyBold13, padding:hp(1)}}>Forgot Password?</TextView>
+              <Pressable
+                onPress={() => navigation.navigate("Forgotpassword")}
+                style={{ alignSelf: "flex-end" }}
+              >
+                <TextView
+                  style={{
+                    color: Colors.PRIMARY[100],
+                    ...Typography.BodyBold13,
+                    padding: hp(1),
+                  }}
+                >
+                  Forgot Password?
+                </TextView>
               </Pressable>
             </View>
           </View>

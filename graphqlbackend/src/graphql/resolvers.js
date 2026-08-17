@@ -1,0 +1,151 @@
+const User = require("../models/users");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
+const resolvers = {
+  Mutation: {
+    loginUser: async (_, { email, password, fcmtoken }) => {
+      try {
+        if (!email || !password) {
+          return {
+            success: false,
+            message: "Email and password required..",
+            token: null,
+            user: null,
+          };
+        }
+        const user = await User.findOne({ email });
+        if (!user) {
+          return {
+            success: false,
+            message: "User not found..",
+            token: null,
+            user: null,
+          };
+        }
+
+        const cleanpassword = password.trim();
+        const isMatch = await bcrypt.compare(cleanpassword, user.password);
+        if (!isMatch) {
+          return {
+            success: false,
+            message: "Invalid credentials",
+            token: null,
+            user: null,
+          };
+        }
+
+        if (fcmtoken) {
+          user.fcmtoken = fcmtoken;
+        }
+
+        const token = jwt.sign(
+          {
+            userId: user?._id,
+          },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: "2d",
+          },
+        );
+
+        ((user.token = token), await user.save());
+        return {
+          success: true,
+          message: "Login Successfully..",
+          user: {
+            id: user._id.toString(),
+            name: user.name,
+            age: user.age,
+            email: user.email,
+            mobile: user.mobile,
+            profileImage: user.profileImage,
+            fcmtoken: user.fcmtoken,
+            createdAt: user.createdAt.toISOString(),
+          },
+        };
+      } catch (error) {
+        console.log("GraphQL Login Error:", error);
+
+        return {
+          success: false,
+          message: "Internal Server Error",
+          token: null,
+          user: null,
+        };
+      }
+    },
+    addUser: async (_, { name, email, mobile, password, fcmtoken }) => {
+      try {
+        const existinguser = await User.findOne({ email });
+        if (!existinguser) {
+          return {
+            success: false,
+            message: "User already exits.",
+            token: null,
+            user: null,
+          };
+        }
+
+        const existingmobile = await User.findOne({ mobile });
+        if (!existingmobile) {
+          return {
+            success: false,
+            message: 'User mobile already exists."',
+            token: null,
+            user: null,
+          };
+        }
+
+        const hashpassword = await bcrypt.hash(password, 10);
+
+        const user = User.create({
+          name,
+          email,
+          mobile,
+          password: hashpassword,
+          fcmtoken,
+        });
+
+        const token = jwt.sign(
+          {
+            userId: user?._id,
+          },
+          process.env.JWT_SECRET,
+          {
+            expires: "1d",
+          },
+        );
+
+        user.token = token;
+        await user.save();
+
+        return {
+          success: true,
+          message: "User registered successfully..",
+          user: {
+            id: user._id.toString(),
+            name: user.name,
+            age: user.age,
+            email: user.email,
+            mobile: user.mobile,
+            profileImage: user.profileImage,
+            fcmtoken: user.fcmtoken,
+            createdAt: user.createdAt ? user.createdAt.toISOString() : null,
+          },
+        };
+
+      } catch (error) {
+        console.log('graph ql  signup erors', error);
+        return {
+          success:false,
+          message:'Internal Server Error',
+          token:null,
+          user:null
+        }
+      }
+    },
+  },
+};
+
+module.exports = resolvers;

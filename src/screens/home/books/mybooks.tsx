@@ -29,6 +29,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Icon } from "@/constant/index";
 import { ThemeContext } from "@/context/themeContext";
+import { useNavigation } from "@react-navigation/native";
 
 type MybooksNavigationType = NativeStackNavigationProp<
   HomeStackProps,
@@ -98,6 +99,7 @@ const MyBooks: FC = () => {
   const { theme, themetoggle } = useContext(ThemeContext);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = bookstyles(currentTheme);
+  const navigation = useNavigation<MybooksNavigationType>()
 
   const tabs = ["Currently Reading", "Completed", "Want to Read"];
 
@@ -147,11 +149,11 @@ const MyBooks: FC = () => {
               />
             </View>
 
-            <Text style={styles.progressText}>{book.progress}%</Text>
+            <TextView style={styles.progressText}>{book.progress}%</TextView>
           </View>
 
           <TouchableOpacity activeOpacity={0.8} style={styles.continueButton}>
-            <Text style={styles.continueText}>Continue Reading</Text>
+            <TextView style={styles.continueText}>Continue Reading</TextView>
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -169,8 +171,7 @@ const MyBooks: FC = () => {
         },
       ]}
     >
-      {/* Header */}
-     <Header showheader={false}  screenname="My Books" />
+     <Header showheader={false} showicons={false}  screenname="My Books" />
 
       {/* Tabs */}
       <ScrollView
@@ -226,7 +227,7 @@ const MyBooks: FC = () => {
         <View style={{ height: 100 }} />
       </ScrollView>
 
-      <TouchableOpacity activeOpacity={0.8} style={styles.floatingButton}>
+      <TouchableOpacity onPress={()=> navigation.navigate('Addbooks')} activeOpacity={0.8} style={styles.floatingButton}>
         <FontAwesome name="plus" size={22} color={Colors.SECONDARY[100]} />
       </TouchableOpacity>
 

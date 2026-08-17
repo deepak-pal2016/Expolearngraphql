@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { HomeStackProps } from "src/@types";
-import { Bookdetails, Dashboard, Search } from "@screens/index";
+import { Addbooks, Bookdetails, Dashboard, Search } from "@screens/index";
 import BottomTabNavigator from "../navigation/bottomtabnavigator";
 
 
@@ -16,6 +16,7 @@ const Homestacknavigator: FC = () => {
       <HomeStack.Screen name="Dashboard" component={Dashboard} />
        <HomeStack.Screen name="Search" component={Search} />
       <HomeStack.Screen name="Bookdetails" component={Bookdetails} />
+       <HomeStack.Screen name="Addbooks" component={Addbooks} />
     </HomeStack.Navigator>
   );
 };

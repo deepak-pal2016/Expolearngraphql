@@ -37,21 +37,10 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
 import { SignInValidationSchema } from "@helpers/validations";
-import { Loginuser } from "@redux/slices/authSlice";
-// import {
-//   getMessaging,
-//   getToken,
-//   requestPermission,
-//   onTokenRefresh,
-// } from '@react-native-firebase/messaging';
-// import { getApp } from '@react-native-firebase/app';
-import { useDispatch } from "react-redux";
-import { useAppDispatch } from "@redux/store/hooks";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { LocalStorage } from "@helpers/localstorage";
 import { UserDataContext } from "../../../context";
 import { UserData } from "../../../context/userDataContext";
-import { useLoginMutation } from "@services/rtkquery/apis/authapi";
 type ForgotpasswordNavigationType = NativeStackNavigationProp<
   AuthStackProps,
   "Forgotpassword"
@@ -61,7 +50,6 @@ const Forgotpassword: FC = () => {
   // const [login, { data, error, isLoading }] = useLoginMutation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<ForgotpasswordNavigationType>();
-  const dispatch = useAppDispatch();
   const { setIsLoggedIn, setUserData } = useContext<UserData>(UserDataContext);
   const { showLoader, hideLoader } = CommonLoader();
   const { theme, themetoggle } = useContext(ThemeContext);
@@ -166,10 +154,9 @@ const Forgotpassword: FC = () => {
         extraScrollHeight={hp(1)}
         showsVerticalScrollIndicator={false}
       >
-        <ImageBackground style={{ flex: 1 }} source={Images.ic_passwordimg}>
-          <View style={[styles.container, { paddingTop: insets.top }]}>
-            <Header showheader={true} showicons={false} />
-
+           <Header showheader={true} showicons={false} />
+        <ImageBackground style={{width:'100%', height:'100%',  }} resizeMode='cover' source={Images.ic_passwordimg}>
+          <View style={[styles.container, { paddingTop: insets.top , bottom:hp(3)}]}>
             <Image source={Images.ic_logo} style={styles.logostyles} />
             <View
               style={{
@@ -185,8 +172,7 @@ const Forgotpassword: FC = () => {
                 style={[
                   styles.apptitle,
                   { ...Typography.BodyRegular12, textAlign: "left" },
-                ]}
-              >
+                ]}>
                 Enter your email and we'll send you a link {"\n"}to reset your
                 password.
               </TextView>

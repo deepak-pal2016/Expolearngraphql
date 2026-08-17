@@ -15,7 +15,7 @@ import {
   Appearance,
   ImageProps,
 } from 'react-native';
-import  TextView from '../../TextView/textView';
+import { TextView } from '@components/index';
 import createstyles from '../floattextinput/styles';
 import {
   heightPercentageToDP as hp,
@@ -25,8 +25,7 @@ import { Colors, Images, Typography } from '@constant/index';
 import { FormikErrors, FormikTouched } from 'formik';
 import { useContext } from 'react';
 import { ThemeContext } from '../../../context/themeContext';
-import  {LightTheme} from '../../theme/theme';
-import {DarkTheme} from '../../theme/theme';
+import { LightTheme, DarkTheme } from '@components/index';
 
 const colorscheme = Appearance.getColorScheme();
 
@@ -48,7 +47,6 @@ interface TextInputProps {
   isMultiline?: boolean;
   lefticon?: ImageProps;
   placeholder?: string;
-  backcolor?:string;
 }
 
 const FloatingTextInput: FC<TextInputProps> = ({
@@ -69,7 +67,6 @@ const FloatingTextInput: FC<TextInputProps> = ({
   isMultiline,
   placeholder,
   lefticon,
-  backcolor
 }) => {
   const inputRef = useRef<TextInput>(null);
   const animatedValue = useRef(new Animated.Value(0));
@@ -118,14 +115,12 @@ const FloatingTextInput: FC<TextInputProps> = ({
         style={[
           styles.container,
           style,
-          
           {
             borderColor:
-              error && touched && Colors.ERROR[100] ,
+              error && touched ? Colors.ERROR[100] : Colors.SECONDARY[500],
             ...Typography.BodyRegular12,
-            height: isMultiline ? hp(11) : hp(6.2),
+            height: isMultiline ? hp(11) : hp(5.5),
             borderWidth: hp(0.04),
-            backgroundColor: backcolor,
           },
         ]}
       >
@@ -150,8 +145,8 @@ const FloatingTextInput: FC<TextInputProps> = ({
             <Image
               source={lefticon}
               style={{
-                tintColor: Colors.SECONDARY[200],
-                width: wp(5),
+                tintColor: Colors.FLOATINGINPUT[200],
+                width: wp(4.9),
                 height: hp(2.2),
               }}
               resizeMode="contain"

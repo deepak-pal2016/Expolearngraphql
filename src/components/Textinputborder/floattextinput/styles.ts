@@ -7,22 +7,22 @@ const styles = (theme:any) => StyleSheet.create({
     container: {
         borderWidth: 1,
         borderRadius: hp(1),
-        borderColor: Colors.ERROR[100],
-       
+        borderColor: Colors.SECONDARY[400],
+        backgroundColor: Colors.SECONDARY[100],
         width: wp(80),
         alignSelf: 'center',
         flexDirection: 'column',
         marginTop: hp(1),
-        shadowColor: Colors.SECONDARY[200],
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 1,
-        shadowRadius: 2,
-        elevation: 2,
+        shadowColor: Colors.PRIMARY[100],
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 10,
+        shadowRadius: 20,
+        elevation: 5,
     },
     input: {
-       bottom:hp(.2),
+       bottom:hp(.0),
         color: Colors.SECONDARY[200],
-        ...Typography.BodyRegular12,
+        ...Typography.H1Bold30,
         paddingHorizontal: hp(5),
         borderRadius: hp(1),
         textAlignVertical:'center'
@@ -41,7 +41,7 @@ const styles = (theme:any) => StyleSheet.create({
         marginLeft: hp(.5),
         color: Colors.ERROR[100],
         maxWidth: wp(90),
-        ...Typography.BodyRegular12,
+        ...Typography.BodyBold13,
     },
     secureBtn: {
         position: 'absolute',
@@ -66,8 +66,8 @@ const styles = (theme:any) => StyleSheet.create({
     },
     floatlable: {
         color: theme?.text,
-        ...Typography.BodyBold13,
-        left: hp(.6),
+        ...Typography.BodyRegular12,
+        left: hp(1),
         top:hp(.2)
     }
 });

@@ -2,10 +2,16 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-native/no-inline-styles */
-import { View, Image, TouchableWithoutFeedback, Pressable } from "react-native";
+import {
+  View,
+  Image,
+  TouchableWithoutFeedback,
+  Pressable,
+  Platform,
+} from "react-native";
 import React, { FC, useContext, useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import loginStyles from "@styles/loginStyles";
+import loginStyles from "../../../styles/loginStyles";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { cardShadow, Colors, Images, Typography } from "@constant/index";
 import {
@@ -26,18 +32,10 @@ import { AuthStackProps } from "src/@types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
-// import {
-//   getMessaging,
-//   getToken,
-//   requestPermission,
-//   onTokenRefresh,
-// } from '@react-native-firebase/messaging';
-// import { getApp } from '@react-native-firebase/app';
-import { useAppDispatch } from "@redux/store/hooks";
-import { Registeruser } from "@redux/slices/authSlice";
+import * as Notifications from "expo-notifications";
+import * as Device from "expo-device";
 import { SignupvalidSchema } from "@helpers/validations";
 import { values } from "lodash";
-import { useDispatch } from "react-redux";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { LocalStorage } from "@helpers/localstorage";
 import { UserData, UserDataContext } from "../../../context/userDataContext";
@@ -47,7 +45,6 @@ type SignupscreenNavigationType = NativeStackNavigationProp<
 >;
 
 const Signup: FC = () => {
-  const dispatch = useAppDispatch();
   const navigation = useNavigation<SignupscreenNavigationType>();
   const insets = useSafeAreaInsets();
   const { setIsLoggedIn, setUserData } = useContext<UserData>(UserDataContext);
@@ -57,6 +54,50 @@ const Signup: FC = () => {
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const [privacy, setPrivacy] = useState<boolean>(false);
   const styles = loginStyles(currentTheme);
+
+  const getFCMToken = async () => {
+    try {
+      if (!Device.isDevice) {
+        console.log("Physical device required for push notifications");
+        return null;
+      }
+
+      // Permission check
+      const { status: existingStatus } =
+        await Notifications.getPermissionsAsync();
+
+      let finalStatus = existingStatus;
+
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+
+        finalStatus = status;
+      }
+
+      if (finalStatus !== "granted") {
+        console.log("Notification permission denied");
+        return null;
+      }
+
+      // Android notification channel
+      if (Platform.OS === "android") {
+        await Notifications.setNotificationChannelAsync("default", {
+          name: "default",
+          importance: Notifications.AndroidImportance.MAX,
+        });
+      }
+
+      // Get native device token
+      const tokenResponse = await Notifications.getDevicePushTokenAsync();
+
+      console.log("FCM TOKEN =>", tokenResponse.data);
+
+      return tokenResponse.data;
+    } catch (error) {
+      console.log("FCM TOKEN ERROR =>", error);
+      return null;
+    }
+  };
 
   const {
     values,
@@ -78,22 +119,9 @@ const Signup: FC = () => {
     onSubmit: async (value) => {
       showLoader();
       try {
-        const token = await getfcmtoken();
+        const token = await getFCMToken();
         const body = { ...value, fcmtoken: token };
-        const response: any = await dispatch(Registeruser(body)).unwrap();
-        if (response?.success === true) {
-          showSuccess("User Registered Successfully");
-          setIsLoggedIn(true);
-          await LocalStorage.save("@user", response?.data);
-          await LocalStorage.save("@login", true);
-          await LocalStorage.save("@token", response?.data?.token);
-          resetForm();
-        } else {
-          showError(
-            response?.message ||
-              "Something went wrong. Please try again later.",
-          );
-        }
+     
       } catch (error: any) {
         console.log(error, "error==");
         if (error?.status === 404) {
@@ -108,24 +136,6 @@ const Signup: FC = () => {
       }
     },
   });
-
-  // const getfcmtoken = async () => {
-  //   const app = getApp();
-  //   const messageingInstance = getMessaging(app);
-  //   const authstatus = await requestPermission(messageingInstance);
-  //   const enabled = authstatus === 1 || authstatus === 2;
-  //   if (!enabled) {
-  //     console.log('permission not granted');
-  //     return;
-  //   }
-
-  //   const token = await getToken(messageingInstance);
-  //   return token;
-
-  //   // onTokenRefresh(messageingInstance, newtoken => {
-  //   //   console.log('refresh token', newtoken);
-  //   // });
-  // };
 
   return (
     <TouchableWithoutFeedback>
@@ -171,7 +181,7 @@ const Signup: FC = () => {
             <View style={styles.inputWrapper}>
               <FloatingTextInput
                 lefticon={Images.ic_user}
-                style={{ width: wp(80) }}
+                style={styles.widthtextinput}
                 label={"Name"}
                 placeholder="Enter your full-name"
                 touched={touched.name}
@@ -184,7 +194,7 @@ const Signup: FC = () => {
             <View style={styles.inputWrapper}>
               <FloatingTextInput
                 lefticon={Images.ic_email}
-                style={{ width: wp(80) }}
+                style={styles.widthtextinput}
                 label={"Email"}
                 placeholder="Enter your email"
                 touched={touched.email}
@@ -199,7 +209,7 @@ const Signup: FC = () => {
             <View style={styles.inputWrapper}>
               <FloatingTextInput
                 lefticon={Images.ic_email}
-                style={{ width: wp(80) }}
+                style={styles.widthtextinput}
                 label={"Mobile"}
                 placeholder="Enter your mobile"
                 touched={touched.mobile}
@@ -212,7 +222,7 @@ const Signup: FC = () => {
             <View style={styles.inputWrapper}>
               <FloatingTextInput
                 lefticon={Images.ic_lock}
-                style={{ width: wp(80) }}
+                style={styles.widthtextinput}
                 label={"Password"}
                 placeholder="Enter your password"
                 isSecure={true}

@@ -20,6 +20,8 @@ module.exports = function (api) {
             "@services": "./src/services",
             "@navigation": "./src/navigation",
             "@styles": "./src/styles",
+            "@zustand": "./src/zustand",
+            "@graphqls":"./src/graphqls"
           },
         },
       ],
