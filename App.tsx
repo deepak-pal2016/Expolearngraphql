@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect } from "react";
-import Client from './src/graphqls/client'
-import {ApolloProvider} from '@apollo/client/react';
+import Client from "./src/graphqls/client";
+import { ApolloProvider } from "@apollo/client/react";
 import Route from "./src/routes/index";
 import { CommonAlertProvider } from "@components/CommonAlertModal/commonAlertModal";
 import { CommonLoaderProvider } from "@components/CommonLoader/commonLoader";
@@ -124,14 +124,13 @@ const App = () => {
           <CommonLoaderProvider>
             <CommonAlertProvider>
               <Route />
-              <FlashMessage position="bottom" />
+              <FlashMessage position="center" floating={true} />
             </CommonAlertProvider>
           </CommonLoaderProvider>
         </UserDataContextProvider>
       </ThemeProvider>
       {/* </PaperProvider> */}
-      </ApolloProvider>
-
+    </ApolloProvider>
   );
 };
 

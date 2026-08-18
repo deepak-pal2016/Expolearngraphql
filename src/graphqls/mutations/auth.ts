@@ -26,7 +26,7 @@ export const ADD_USER = gql`
     $email: String!
     $mobile: String!
     $password: String!
-    $fcmtoken: String
+    $fcmtoken: String!
   ) {
     addUser(
       name: $name

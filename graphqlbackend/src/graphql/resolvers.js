@@ -9,27 +9,31 @@ const resolvers = {
         if (!email || !password) {
           return {
             success: false,
-            message: "Email and password required..",
-            token: null,
-            user: null,
-          };
-        }
-        const user = await User.findOne({ email });
-        if (!user) {
-          return {
-            success: false,
-            message: "User not found..",
+            message: "Email and password required.",
             token: null,
             user: null,
           };
         }
 
-        const cleanpassword = password.trim();
-        const isMatch = await bcrypt.compare(cleanpassword, user.password);
+        const user = await User.findOne({ email });
+        console.log("LOGIN USER:", user);
+
+        if (!user) {
+          return {
+            success: false,
+            message: "User not found.",
+            token: null,
+            user: null,
+          };
+        }
+
+        const cleanPassword = password.trim();
+        const isMatch = await bcrypt.compare(cleanPassword, user.password);
+
         if (!isMatch) {
           return {
             success: false,
-            message: "Invalid credentials",
+            message: "Invalid email or password.",
             token: null,
             user: null,
           };
@@ -41,7 +45,7 @@ const resolvers = {
 
         const token = jwt.sign(
           {
-            userId: user?._id,
+            userId: user._id.toString(),
           },
           process.env.JWT_SECRET,
           {
@@ -49,10 +53,14 @@ const resolvers = {
           },
         );
 
-        ((user.token = token), await user.save());
+        user.token = token;
+
+        await user.save();
+
         return {
           success: true,
-          message: "Login Successfully..",
+          message: "Login successfully.",
+          token,
           user: {
             id: user._id.toString(),
             name: user.name,
@@ -61,7 +69,7 @@ const resolvers = {
             mobile: user.mobile,
             profileImage: user.profileImage,
             fcmtoken: user.fcmtoken,
-            createdAt: user.createdAt.toISOString(),
+            createdAt: user.createdAt ? user.createdAt.toISOString() : null,
           },
         };
       } catch (error) {
@@ -77,29 +85,29 @@ const resolvers = {
     },
     addUser: async (_, { name, email, mobile, password, fcmtoken }) => {
       try {
-        const existinguser = await User.findOne({ email });
-        if (!existinguser) {
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
           return {
             success: false,
-            message: "User already exits.",
+            message: "User already exists.",
             token: null,
             user: null,
           };
         }
 
-        const existingmobile = await User.findOne({ mobile });
-        if (!existingmobile) {
+        const existingMobile = await User.findOne({ mobile });
+
+        if (existingMobile) {
           return {
             success: false,
-            message: 'User mobile already exists."',
+            message: "User mobile already exists.",
             token: null,
             user: null,
           };
         }
 
         const hashpassword = await bcrypt.hash(password, 10);
-
-        const user = User.create({
+        const user = await User.create({
           name,
           email,
           mobile,
@@ -109,11 +117,11 @@ const resolvers = {
 
         const token = jwt.sign(
           {
-            userId: user?._id,
+            userId: user._id.toString(),
           },
           process.env.JWT_SECRET,
           {
-            expires: "1d",
+            expiresIn: "1d",
           },
         );
 
@@ -122,7 +130,8 @@ const resolvers = {
 
         return {
           success: true,
-          message: "User registered successfully..",
+          message: "User registered successfully.",
+          token,
           user: {
             id: user._id.toString(),
             name: user.name,
@@ -134,15 +143,15 @@ const resolvers = {
             createdAt: user.createdAt ? user.createdAt.toISOString() : null,
           },
         };
-
       } catch (error) {
-        console.log('graph ql  signup erors', error);
+        console.log("GraphQL Signup Error:", error);
+
         return {
-          success:false,
-          message:'Internal Server Error',
-          token:null,
-          user:null
-        }
+          success: false,
+          message: "Internal Server Error",
+          token: null,
+          user: null,
+        };
       }
     },
   },

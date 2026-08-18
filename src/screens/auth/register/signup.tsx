@@ -39,6 +39,10 @@ import { values } from "lodash";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { LocalStorage } from "@helpers/localstorage";
 import { UserData, UserDataContext } from "../../../context/userDataContext";
+import { useMutation } from "@apollo/client/react";
+import { ADD_USER } from "@/graphqls/mutations/auth";
+import useAuthStore from "@/store/authStore";
+
 type SignupscreenNavigationType = NativeStackNavigationProp<
   AuthStackProps,
   "Signup"
@@ -53,16 +57,26 @@ const Signup: FC = () => {
   const { theme, themetoggle } = useContext(ThemeContext);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const [privacy, setPrivacy] = useState<boolean>(false);
+  const login = useAuthStore((state) => state.login);
   const styles = loginStyles(currentTheme);
+  const [addUser, { loading }] = useMutation(ADD_USER);
 
   const getFCMToken = async () => {
     try {
       if (!Device.isDevice) {
-        console.log("Physical device required for push notifications");
+        console.log("Physical device required");
         return null;
       }
 
-      // Permission check
+      // Android notification channel
+      if (Platform.OS === "android") {
+        await Notifications.setNotificationChannelAsync("default", {
+          name: "default",
+          importance: Notifications.AndroidImportance.MAX,
+        });
+      }
+
+      // Permission
       const { status: existingStatus } =
         await Notifications.getPermissionsAsync();
 
@@ -79,19 +93,7 @@ const Signup: FC = () => {
         return null;
       }
 
-      // Android notification channel
-      if (Platform.OS === "android") {
-        await Notifications.setNotificationChannelAsync("default", {
-          name: "default",
-          importance: Notifications.AndroidImportance.MAX,
-        });
-      }
-
-      // Get native device token
       const tokenResponse = await Notifications.getDevicePushTokenAsync();
-
-      console.log("FCM TOKEN =>", tokenResponse.data);
-
       return tokenResponse.data;
     } catch (error) {
       console.log("FCM TOKEN ERROR =>", error);
@@ -117,11 +119,36 @@ const Signup: FC = () => {
     },
 
     onSubmit: async (value) => {
-      showLoader();
       try {
+        if (!privacy) {
+          showError("Please accept Terms & Conditions and Privacy Policy");
+          return;
+        }
+        showLoader();
         const token = await getFCMToken();
-        const body = { ...value, fcmtoken: token };
-     
+        const variables = {
+          name: value.name,
+          email: value.email,
+          mobile: value.mobile,
+          password: value.password,
+          fcmtoken: token || "",
+        };
+        const { data } = (await addUser({ variables })) as {
+          data?: { addUser?: any };
+        };
+        const response = data?.addUser;
+        console.log(response,'response');
+        
+        if (response?.success) {
+          login(response.user, response.token);
+          showSuccess(response.message || "Account created successfully");
+          resetForm();
+          setPrivacy(false);
+        } else if (response?.success === false) {
+           showError(response.message);
+        } else {
+          showError(response?.message || "Signup failed");
+        }
       } catch (error: any) {
         console.log(error, "error==");
         if (error?.status === 404) {

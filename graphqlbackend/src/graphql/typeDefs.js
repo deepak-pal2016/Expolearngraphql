@@ -27,7 +27,7 @@ const typeDefs = gql`
     loginUser(
       email: String!
       password: String!
-      fcmtoken: String
+      fcmtoken: String!
     ): LoginResponse!
 
     addUser(
@@ -36,7 +36,7 @@ const typeDefs = gql`
       mobile:String!
       password:String!
       fcmtoken:String!
-    )
+    ): LoginResponse!
   }
 `;
 

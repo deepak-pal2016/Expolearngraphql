@@ -1,10 +1,9 @@
 //graphql server.js code
-
+require("dotenv").config();
 const express = require("express");
 const { ApolloServer } = require("@apollo/server");
 const { expressMiddleware } = require("@as-integrations/express5");
-const path = require('path');
-const fs = require('fs')
+const connectDB = require("./src/config/db");
 
 const typeDefs = require("./src/graphql/typeDefs");
 const resolvers = require("./src/graphql/resolvers");
@@ -18,6 +17,7 @@ const server = new ApolloServer({
 });
 
 const startServers = async () => {
+  await connectDB();
   await server.start();
   app.use("/graphql", expressMiddleware(server));
   app.listen(5000, () => {
@@ -26,4 +26,4 @@ const startServers = async () => {
   });
 };
 
-startServers()
+startServers();

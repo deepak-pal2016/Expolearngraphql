@@ -62,9 +62,9 @@ const Login: FC = () => {
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = loginStyles(currentTheme);
 
- useEffect(() => {
-  getFCMToken();
-}, []);
+  useEffect(() => {
+    getFCMToken();
+  }, []);
 
   const { values, errors, touched, handleSubmit, handleChange, setFieldValue } =
     useFormik({
@@ -78,12 +78,20 @@ const Login: FC = () => {
           const token = await getFCMToken();
           const addwihtfmcdta = { ...datas, fcmtoken: token };
           showLoader();
-          console.log(token, "addwihtfmcdta");
+          console.log(addwihtfmcdta);
 
           const { data } = await loginUser({
             variables: addwihtfmcdta,
-          });
-          console.log(addwihtfmcdta, "LOGIN RESPONSE:", data);
+          }) as {
+          data?: { loginUser?: any };
+        };
+          console.log("LOGIN RESPONSE:", data);
+          const response = data?.loginUser;
+          if (response?.success === true) {
+            showSuccess(response?.message);
+          } else if (response?.success === false) {
+            showError(response?.message);
+          }
         } catch (error: any) {
           console.log("ERROR FULL:", error);
           showError("Login Failed");
@@ -137,10 +145,6 @@ const Login: FC = () => {
       }
 
       const tokenResponse = await Notifications.getDevicePushTokenAsync();
-
-      console.log("TOKEN TYPE =>", tokenResponse.type);
-      console.log("FCM TOKEN =>", tokenResponse.data);
-
       return tokenResponse.data;
     } catch (error) {
       console.log("FCM TOKEN ERROR =>", error);
