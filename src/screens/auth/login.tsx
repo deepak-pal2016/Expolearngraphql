@@ -80,16 +80,24 @@ const Login: FC = () => {
           showLoader();
           console.log(addwihtfmcdta);
 
-          const { data } = await loginUser({
+          const { data } = (await loginUser({
             variables: addwihtfmcdta,
-          }) as {
-          data?: { loginUser?: any };
-        };
-          console.log("LOGIN RESPONSE:", data);
+          })) as {
+            data?: { loginUser?: any };
+          };
           const response = data?.loginUser;
+          console.log("LOGIN RESPONSE:", data, "=3=3depak", response?.user);
           if (response?.success === true) {
             showSuccess(response?.message);
+            login(response.user, response.token);
+            await LocalStorage.save("@user", response?.user);
+            await LocalStorage.save("@token", response?.token);
+            await LocalStorage.save("@login", true);
+            setIsLoggedIn(true);
+            setUserData(response?.user);
           } else if (response?.success === false) {
+            showError(response?.message);
+          } else {
             showError(response?.message);
           }
         } catch (error: any) {

@@ -14,34 +14,18 @@ import { LocalStorage } from "@helpers/localstorage";
 import { UserData, UserDataContext } from "../context/userDataContext";
 import { Colors } from "../constant";
 import * as Network from "expo-network";
-// import SplashScreen from 'react-native-splash-screen';
 import { CommonLoader, CommonAlertModal } from "@components/index";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import Socket from '@services/socket/socket';
 import { navigationRef } from "../utils/NavigationService";
+import useAuthStore from "@/store/authStore";
 
 const Route: FC = () => {
   const [userLogin, setUserLogin] = useState<any>(undefined);
-  const { isLoggedIn } = useContext<UserData>(UserDataContext);
   const { showAlert, hideAlert } = CommonAlertModal();
   const { userData, setIsLoggedIn } = useContext<UserData>(UserDataContext);
-
-  // useEffect(() => {
-  //   async function createChannel() {
-  //     await notifee.createChannel({
-  //       id: 'default',
-  //       name: 'Default Channel',
-  //     });
-  //   }
-
-  //   createChannel();
-  // }, []);
-
-  // useEffect(() => {
-  //   if (userData?._id) {
-  //     Socket.emit('user_online', userData?._id);
-  //   }
-  // }, [userData]);
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  console.log(isLoggedIn,'isLoggedIn');
+  
 
   useEffect(() => {
     getAsync();
@@ -49,8 +33,7 @@ const Route: FC = () => {
 
   const getAsync = async () => {
     try {
-      let val = await LocalStorage.read("@login");
-      setUserLogin(false);
+      setUserLogin(isLoggedIn);
     } catch (error) {
       console.error("Error fetching user login status:", error);
       setUserLogin("false");
@@ -115,7 +98,7 @@ const Route: FC = () => {
 
   //removed loading authscreen in first instance because of the null(false) for userLogin
   //if (loginState === undefined || loginState === 'null') return <></>;
-  if (userLogin === undefined || userLogin === "null") return <></>;
+  if (isLoggedIn === undefined || isLoggedIn === "null") return <></>;
 
   //
   return (
@@ -124,7 +107,7 @@ const Route: FC = () => {
         <StatusBar barStyle={"default"} backgroundColor={Colors.PRIMARY[100]} />
         <SafeAreaView style={{ flex: 1 }}>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
-            {userLogin ? (
+            {isLoggedIn ? (
               <>
                 <Stack.Screen
                   name="Homestacknavigator"

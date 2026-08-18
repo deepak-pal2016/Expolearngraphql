@@ -47,6 +47,7 @@ import { UserData, UserDataContext } from "../../../context/userDataContext";
 import { LocalStorage } from "@helpers/localstorage";
 import { UsePagination } from "../../../hooks/usepagination";
 import { showError, showSuccess } from "@components/Flashmessge";
+import useAuthStore from "@/store/authStore";
 
 type DashboardscreenNavigationType = NativeStackNavigationProp<
   HomeStackProps,
@@ -112,7 +113,8 @@ const Dashboard: FC = () => {
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = dashboardstyle(currentTheme);
   const { setIsLoggedIn, setUserData, userData } = useContext<UserData>(UserDataContext);
-  // console.log(userData,'userData');
+  const user = useAuthStore((state) => state.user);
+   console.log(user,'user');
   
   const insets = useSafeAreaInsets();
   return (
