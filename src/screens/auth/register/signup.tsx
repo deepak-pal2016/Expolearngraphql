@@ -38,7 +38,6 @@ import { SignupvalidSchema } from "@helpers/validations";
 import { values } from "lodash";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { LocalStorage } from "@helpers/localstorage";
-import { UserData, UserDataContext } from "../../../context/userDataContext";
 import { useMutation } from "@apollo/client/react";
 import { ADD_USER } from "@/graphqls/mutations/auth";
 import useAuthStore from "@/store/authStore";
@@ -51,7 +50,6 @@ type SignupscreenNavigationType = NativeStackNavigationProp<
 const Signup: FC = () => {
   const navigation = useNavigation<SignupscreenNavigationType>();
   const insets = useSafeAreaInsets();
-  const { setIsLoggedIn, setUserData } = useContext<UserData>(UserDataContext);
   const { showLoader, hideLoader } = CommonLoader();
   const [isSecure, setIsSecure] = useState<boolean>(true);
   const { theme, themetoggle } = useContext(ThemeContext);

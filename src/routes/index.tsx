@@ -10,8 +10,6 @@ import {
 } from "../navigation/index";
 import { StatusBar, BackHandler } from "react-native";
 const Stack = createNativeStackNavigator();
-import { LocalStorage } from "@helpers/localstorage";
-import { UserData, UserDataContext } from "../context/userDataContext";
 import { Colors } from "../constant";
 import * as Network from "expo-network";
 import { CommonLoader, CommonAlertModal } from "@components/index";
@@ -22,7 +20,6 @@ import useAuthStore from "@/store/authStore";
 const Route: FC = () => {
   const [userLogin, setUserLogin] = useState<any>(undefined);
   const { showAlert, hideAlert } = CommonAlertModal();
-  const { userData, setIsLoggedIn } = useContext<UserData>(UserDataContext);
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
   console.log(isLoggedIn,'isLoggedIn');
   
@@ -36,7 +33,7 @@ const Route: FC = () => {
       setUserLogin(isLoggedIn);
     } catch (error) {
       console.error("Error fetching user login status:", error);
-      setUserLogin("false");
+      setUserLogin(isLoggedIn);
     }
   };
 
@@ -98,7 +95,7 @@ const Route: FC = () => {
 
   //removed loading authscreen in first instance because of the null(false) for userLogin
   //if (loginState === undefined || loginState === 'null') return <></>;
-  if (isLoggedIn === undefined || isLoggedIn === "null") return <></>;
+  if (isLoggedIn === undefined) return <></>;
 
   //
   return (

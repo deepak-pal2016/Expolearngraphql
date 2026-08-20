@@ -12,6 +12,43 @@ const typeDefs = gql`
     createdAt: String
   }
 
+  type Book {
+    id: ID!
+    title: String!
+    author: String!
+    description: String
+    genre: String!
+    language: String
+    isbn: String
+    publisher: String
+    publishedDate: String
+    numberOfPages: Int
+    rating: Float
+    tags: [String!]
+    trending: Boolean!
+    popular: Boolean!
+    coverImage: String
+    createdAt: String
+  }
+
+  type Genre {
+    id: ID!
+    name: String!
+    value: String!
+    isActive: Boolean!
+    createdAt: String
+    updatedAt: String
+  }
+
+  type Language {
+    id: ID!
+    name: String!
+    value: String!
+    isActive: Boolean!
+    createdAt: String
+    updatedAt: String
+  }
+
   type LoginResponse {
     success: Boolean!
     message: String!
@@ -20,7 +57,9 @@ const typeDefs = gql`
   }
 
   type Query {
-    _empty:String
+    _empty: String
+    genres: [Genre!]!
+    languages: [Language!]!
   }
 
   type Mutation {
@@ -31,12 +70,32 @@ const typeDefs = gql`
     ): LoginResponse!
 
     addUser(
-      name:String!
-      email:String!
-      mobile:String!
-      password:String!
-      fcmtoken:String!
+      name: String!
+      email: String!
+      mobile: String!
+      password: String!
+      fcmtoken: String!
     ): LoginResponse!
+
+    addBooks(
+      title: String!
+      author: String!
+      description: String!
+      genre: String!
+      language: String
+      isbn: String
+      publisher: String
+      publishedDate: String
+      numberOfPages: Int
+      rating: String!
+      tags: [String!]
+      trending: Boolean!
+      popular: Boolean!
+      coverImage: String!
+    ): Book!
+
+    addGenre(name: String!, value: String!): Genre!
+    addLanguage(name: String!, value: String!): Language!
   }
 `;
 

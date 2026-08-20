@@ -40,11 +40,11 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import profileStyles from "@/styles/profileStyles";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackProps } from "src/@types";
-import { UserData, UserDataContext } from "../../../context/userDataContext";
 import { LocalStorage } from "@helpers/localstorage";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { Socket } from "socket.io-client";
 import * as ImagePicker from "expo-image-picker";
+import useAuthStore from "@/store/authStore";
 type ProfilescreenNavigationType = NativeStackNavigationProp<
   HomeStackProps,
   "Profile"
@@ -71,9 +71,8 @@ const Profile: FC<ProfileScreenProps> = ({
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = profileStyles(currentTheme);
   const [selectedFile, setSelectedFile] = useState<any>([]);
-  const { setIsLoggedIn, setUserData, userData } =
-    useContext<UserData>(UserDataContext);
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
+  const user = useAuthStore((state)=> state.user);
 
   // useEffect(() => {
   //  getvalue()
@@ -125,27 +124,7 @@ const Profile: FC<ProfileScreenProps> = ({
       if (response.canceled || !response.assets?.length) return;
       setSelectedFile(response.assets[0]);
       console.log(response.assets[0], "response.assets[0]");
-      if (response) {
-        showLoader();
-        const formdata = new FormData();
-        formdata.append("userId", userData?._id);
-        formdata.append("image", {
-          uri: response.assets[0].uri,
-          type: response.assets[0].type || "image/jpeg",
-          name: response.assets[0].fileName || "profile-image.jpg",
-        } as any);
-        const resp: any = await dispatch(Uploaduserimage(formdata)).unwrap();
-        if (resp?.success === true) {
-          showSuccess("Profile image updated successfully..");
-          await LocalStorage.save("@user", resp?.user);
-          setUserData(resp?.user);
-        } else {
-          showError("Profile image not updated..");
-        }
-      } else {
-        showError("Please open camera take selfie..");
-      }
-      setShowAttachmentModal(false);
+    
     } catch (error: any) {
       setShowAttachmentModal(false);
       const errorMessage =
@@ -177,27 +156,6 @@ const Profile: FC<ProfileScreenProps> = ({
       }
       setShowAttachmentModal(false);
       setSelectedFile(response.assets[0]);
-      if (response) {
-        showLoader();
-        const formdata = new FormData();
-        formdata.append("userId", userData?._id);
-        formdata.append("image", {
-          uri: response.assets[0].uri,
-          type: response.assets[0].type || "image/jpeg",
-          name: response.assets[0].fileName || "profile-image.jpg",
-        } as any);
-        const resp: any = await dispatch(Uploaduserimage(formdata)).unwrap();
-        console.log(resp?.user, "drepe====");
-        if (resp?.success === true) {
-          showSuccess("Profile image Updated successfully..");
-          await LocalStorage.save("@user", resp?.user);
-          setUserData(resp?.user);
-        } else {
-          showError("Profile image not updated..");
-        }
-      } else {
-        showError("Please open camera take selfie..");
-      }
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error
@@ -266,8 +224,8 @@ const Profile: FC<ProfileScreenProps> = ({
             style={styles.avatar}
           />
 
-          <TextView style={styles.name}>Deepak Pal</TextView>
-          <TextView style={styles.email}>deepak@example.com</TextView>
+          <TextView style={styles.name}>{user?.name}</TextView>
+          <TextView style={styles.email}>{user?.email}</TextView>
 
           {/* Statistics */}
           <View style={styles.statsContainer}>

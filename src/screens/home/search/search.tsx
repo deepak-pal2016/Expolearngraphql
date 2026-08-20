@@ -43,7 +43,6 @@ import {
 } from "@components/index";
 import { Colors, Icon, Typography, Images } from "@constant/index";
 import { ThemeContext } from "../../../context/themeContext";
-import { UserData, UserDataContext } from "../../../context/userDataContext";
 import searchstyles from "@/styles/searchStyles";
 // import messaging from '@react-native-firebase/messaging';
 // import notifee from '@notifee/react-native';
@@ -59,7 +58,6 @@ const Search: FC = () => {
   const [selectcatid, setSelectCatId] = useState<number>(0);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = searchstyles(currentTheme);
-  const { userData, setIsLoggedIn } = useContext<UserData>(UserDataContext);
 
   const insets = useSafeAreaInsets();
   return (

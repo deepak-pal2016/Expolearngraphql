@@ -43,7 +43,6 @@ import {
 } from "@components/index";
 import { Colors, Icon, Typography, Images } from "@constant/index";
 import { ThemeContext } from "../../../context/themeContext";
-import { UserData, UserDataContext } from "../../../context/userDataContext";
 import searchstyles from "@/styles/searchStyles";
 import bookStyles from "@/styles/booksStyles";
 // import messaging from '@react-native-firebase/messaging';
@@ -60,7 +59,6 @@ const Bookdetails: FC = () => {
   const [selectcatid, setSelectCatId] = useState<number>(0);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = bookStyles(currentTheme);
-  const { userData, setIsLoggedIn } = useContext<UserData>(UserDataContext);
 
   const insets = useSafeAreaInsets();
   return (

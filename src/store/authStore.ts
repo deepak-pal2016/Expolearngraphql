@@ -26,7 +26,7 @@ const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isLoggedIn: false,
-
+                                             
       login: (user, token) => {
         set({
           user,
@@ -46,7 +46,6 @@ const useAuthStore = create<AuthState>()(
 
     {
       name: "auth-storage",
-
       storage: createJSONStorage(() => AsyncStorage),
     }
   )

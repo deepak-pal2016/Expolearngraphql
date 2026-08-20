@@ -39,8 +39,6 @@ import { useFormik } from "formik";
 import { SignInValidationSchema } from "@helpers/validations";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { LocalStorage } from "@helpers/localstorage";
-import { UserDataContext } from "../../../context";
-import { UserData } from "../../../context/userDataContext";
 type ForgotpasswordNavigationType = NativeStackNavigationProp<
   AuthStackProps,
   "Forgotpassword"
@@ -50,7 +48,6 @@ const Forgotpassword: FC = () => {
   // const [login, { data, error, isLoading }] = useLoginMutation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<ForgotpasswordNavigationType>();
-  const { setIsLoggedIn, setUserData } = useContext<UserData>(UserDataContext);
   const { showLoader, hideLoader } = CommonLoader();
   const { theme, themetoggle } = useContext(ThemeContext);
   const [isSecure, setIsSecure] = useState<boolean>(true);
@@ -84,41 +81,7 @@ const Forgotpassword: FC = () => {
         // } finally {
         //   hideLoader();
         // }
-        try {
-          const response: any = await dispatch(
-            Loginuser(addwihtfmcdta),
-          ).unwrap();
-          if (response?.success === true) {
-            await LocalStorage.save("@user", response?.data);
-            await LocalStorage.save("@token", response?.data?.token);
-            await LocalStorage.save("@login", true);
-            setIsLoggedIn(true);
-            setUserData(response?.data);
-            if (response?.data?._id) {
-              Socket.connect();
-              Socket.emit("user_online", response?.data?._id);
-            }
-            showSuccess("Login Successfully");
-          } else {
-            showError(response?.message || "Login failed");
-          }
-        } catch (error: any) {
-          console.log("ERROR FULL:", error);
-          showError("Login Failed");
-          if (error?.status === 500) {
-            showError("Internal Server Error");
-          } else if (error?.status === 404) {
-            showError(error?.message || "User not found");
-          } else {
-            showError(
-              error?.data?.message ||
-                error?.message ||
-                "Something went wrong. Please try again later.",
-            );
-          }
-        } finally {
-          hideLoader();
-        }
+       
       },
     });
 

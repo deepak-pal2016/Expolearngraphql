@@ -20,7 +20,6 @@ import {
   TextView,
   Recommneded,
 } from "@components/index";
-import { UserData, UserDataContext } from "../../../context/userDataContext";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HomeStackProps } from "src/@types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -119,7 +118,6 @@ const Favoritebooks:FC = () => {
   const [activeTab, setActiveTab] = useState<"all" | "want" | "wish">("all");
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<ForgotpasswordNavigationType>();
-  const dispatch = useAppDispatch();
   const { showLoader, hideLoader } = CommonLoader();
   const [isSecure, setIsSecure] = useState<boolean>(true);
   const { theme, themetoggle } = useContext(ThemeContext);

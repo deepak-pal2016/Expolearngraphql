@@ -7,6 +7,8 @@ import {
   ScrollView,
   Image,
   Switch,
+  Platform,
+  PermissionsAndroid,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { HomeStackProps } from "@/@types";
@@ -34,6 +36,10 @@ import {
 } from "react-native-safe-area-context";
 import { Colors, Icon, Images, Typography } from "@/constant/index";
 import { ThemeContext } from "@/context/themeContext";
+import { useGenreStore } from "@/store/genresStore";
+import * as ImagePicker from "expo-image-picker";
+import { useLanguageStore } from "@/store/languagesStore";
+import { showError } from "@/components/Flashmessge";
 
 type AddBookdNavigationType = NativeStackNavigationProp<
   HomeStackProps,
@@ -44,44 +50,89 @@ const Addbooks: FC = () => {
   const [trending, setTrending] = useState(false);
   const [popular, setPopular] = useState(false);
   const [rating, setRating] = useState(0);
+  const { showLoader, hideLoader } = CommonLoader();
   const [coverImage, setCoverImage] = useState<string | null>(null);
   const { theme, themetoggle } = useContext(ThemeContext);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = bookstyles(currentTheme);
+  const genres = useGenreStore((state) => state.genres);
+  const languages = useLanguageStore((state) => state.languages);
+  const [selectedFile, setSelectedFile] = useState<any>([]);
+  const [showAttachmentModal, setShowAttachmentModal] = useState(false);
 
-  const genreOptions = [
-    { label: "Fiction", value: "fiction" },
-    { label: "Fantasy", value: "fantasy" },
-    { label: "Science Fiction", value: "science_fiction" },
-    { label: "Mystery", value: "mystery" },
-    { label: "Thriller", value: "thriller" },
-    { label: "Romance", value: "romance" },
-    { label: "Horror", value: "horror" },
-    { label: "Biography", value: "biography" },
-    { label: "Autobiography", value: "autobiography" },
-    { label: "History", value: "history" },
-    { label: "Historical Fiction", value: "historical_fiction" },
-    { label: "Self Help", value: "self_help" },
-    { label: "Personal Development", value: "personal_development" },
-    { label: "Psychology", value: "psychology" },
-    { label: "Business", value: "business" },
-    { label: "Finance", value: "finance" },
-    { label: "Programming", value: "programming" },
-    { label: "Technology", value: "technology" },
-    { label: "Education", value: "education" },
-    { label: "Health & Wellness", value: "health_wellness" },
-    { label: "Travel", value: "travel" },
-    { label: "Cooking", value: "cooking" },
-    { label: "Children", value: "children" },
-    { label: "Young Adult", value: "young_adult" },
-    { label: "Poetry", value: "poetry" },
-    { label: "Religion & Spirituality", value: "religion_spirituality" },
-    { label: "Philosophy", value: "philosophy" },
-    { label: "Comics & Graphic Novels", value: "comics_graphic_novels" },
-    { label: "Art & Design", value: "art_design" },
-    { label: "Science", value: "science" },
-    { label: "Other", value: "other" },
-  ];
+  const genreOptions = genres.map((genre) => ({
+    label: String(genre?.name ?? ""),
+    value: String(genre?.value ?? ""),
+  }));
+
+  const langOptions = languages?.map((lang) => ({
+    label: String(lang?.name ?? ""),
+    value: String(lang?.value ?? ""),
+  }));
+
+  const requestCameraPermission = async () => {
+    if (Platform.OS === "android") {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+      );
+
+      return granted === PermissionsAndroid.RESULTS.GRANTED;
+    }
+    return true;
+  };
+
+  const pickGallery = async () => {
+    try {
+      const response = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        quality: 1,
+      });
+
+      if (response.canceled || !response.assets?.length) return;
+      setSelectedFile(response.assets[0]);
+      console.log(response.assets[0], "response.assets[0]");
+    } catch (error: any) {
+      setShowAttachmentModal(false);
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "An error occurred while adding the task";
+      showError(errorMessage);
+    } finally {
+      hideLoader();
+    }
+  };
+
+  const openCamera = async () => {
+    try {
+      const hasPermission = await requestCameraPermission();
+      if (!hasPermission) {
+        console.log("Camera permission denied");
+        return;
+      }
+
+      const response = await ImagePicker.launchCameraAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        quality: 1,
+      });
+
+      if (response.canceled || !response.assets?.length) {
+        return;
+      }
+      setShowAttachmentModal(false);
+      setSelectedFile(response.assets[0]);
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "An error occurred while adding the task";
+      showError(errorMessage);
+    } finally {
+      hideLoader();
+    }
+  };
 
   const renderInput = (
     label: string,
@@ -120,6 +171,10 @@ const Addbooks: FC = () => {
     );
   };
   const insets = useSafeAreaInsets();
+  function setSelectedGenre(value: any): void {
+    throw new Error("Function not implemented.");
+  }
+
   return (
     <View
       style={[
@@ -138,7 +193,7 @@ const Addbooks: FC = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          <TouchableOpacity style={styles.coverUpload}>
+          <TouchableOpacity onPress={()=> openCamera()} style={styles.coverUpload}>
             {coverImage ? (
               <Image source={{ uri: coverImage }} style={styles.coverImage} />
             ) : (
@@ -229,12 +284,14 @@ const Addbooks: FC = () => {
                   alignSelf: "flex-start",
                 }}
               >
-                <TextView style={styles.label}>Genre *</TextView>
                 <View style={{ alignSelf: "flex-start", bottom: hp(4) }}>
                   <CustomDropdown
                     style={{ width: wp(38) }}
                     placeholder="Choose options"
                     items={genreOptions}
+                    value={setSelectedGenre}
+                    dropDownLable="Genre"
+                    setValue={setSelectedGenre}
                     leftIcon={Images.ic_description}
                   />
                 </View>
@@ -245,12 +302,15 @@ const Addbooks: FC = () => {
                   alignSelf: "flex-start",
                 }}
               >
-                <TextView style={styles.label}>Language *</TextView>
                 <View style={{ alignSelf: "flex-start", bottom: hp(4) }}>
                   <CustomDropdown
                     style={{ width: wp(38) }}
-                    placeholder="Choose options"
-                    items={genreOptions}
+                    placeholder="choose otpions"
+                    dropDownLable="Language"
+                    items={langOptions}
+                    value={setSelectedGenre}
+                    leftIcon={Images.ic_description}
+                    setValue={setSelectedGenre}
                   />
                 </View>
               </View>
@@ -452,7 +512,7 @@ const Addbooks: FC = () => {
 
             <Button
               style={{ marginTop: hp(1), width: wp(89), alignSelf: "center" }}
-              onPress={() => console.log('===') }
+              onPress={() => console.log("===")}
               titleStyle={{
                 color: Colors.SECONDARY[100],
                 ...Typography.BodyBold14,

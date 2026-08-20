@@ -37,8 +37,6 @@ import { useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { LocalStorage } from "@helpers/localstorage";
-import { UserDataContext } from "../../context";
-import { UserData } from "../../context/userDataContext";
 import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { useMutation } from "@apollo/client/react";
@@ -53,7 +51,6 @@ type LoginscreenNavigationType = NativeStackNavigationProp<
 const Login: FC = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<LoginscreenNavigationType>();
-  const { setIsLoggedIn, setUserData } = useContext<UserData>(UserDataContext);
   const { showLoader, hideLoader } = CommonLoader();
   const [loginUser, { loading }] = useMutation(LOGIN_USER);
   const login = useAuthStore((state) => state.login);
@@ -86,15 +83,9 @@ const Login: FC = () => {
             data?: { loginUser?: any };
           };
           const response = data?.loginUser;
-          console.log("LOGIN RESPONSE:", data, "=3=3depak", response?.user);
           if (response?.success === true) {
             showSuccess(response?.message);
             login(response.user, response.token);
-            await LocalStorage.save("@user", response?.user);
-            await LocalStorage.save("@token", response?.token);
-            await LocalStorage.save("@login", true);
-            setIsLoggedIn(true);
-            setUserData(response?.user);
           } else if (response?.success === false) {
             showError(response?.message);
           } else {

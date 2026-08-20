@@ -8,7 +8,6 @@ import { CommonAlertProvider } from "@components/CommonAlertModal/commonAlertMod
 import { CommonLoaderProvider } from "@components/CommonLoader/commonLoader";
 import { ThemeProvider } from "./src/context/index";
 import FlashMessage from "react-native-flash-message";
-import { UserDataContextProvider } from "./src/context/index";
 import { LogBox, PermissionsAndroid, Platform } from "react-native";
 import { useFonts } from "expo-font";
 import {
@@ -120,14 +119,12 @@ const App = () => {
     <ApolloProvider client={Client}>
       {/* <PaperProvider> */}
       <ThemeProvider>
-        <UserDataContextProvider>
-          <CommonLoaderProvider>
-            <CommonAlertProvider>
-              <Route />
-              <FlashMessage position="center" floating={true} />
-            </CommonAlertProvider>
-          </CommonLoaderProvider>
-        </UserDataContextProvider>
+        <CommonLoaderProvider>
+          <CommonAlertProvider>
+            <Route />
+            <FlashMessage position="center" floating={true} />
+          </CommonAlertProvider>
+        </CommonLoaderProvider>
       </ThemeProvider>
       {/* </PaperProvider> */}
     </ApolloProvider>

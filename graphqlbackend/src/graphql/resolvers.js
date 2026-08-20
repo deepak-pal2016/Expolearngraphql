@@ -1,8 +1,19 @@
 const User = require("../models/users");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const Book = require("../models/books");
+const Genre = require("../models/genre");
+const Language = require("../models/language");
 
 const resolvers = {
+  Query: {
+    genres: async () => {
+      return await Genre.find({ isActive: true });
+    },
+    languages: async () => {
+      return await Language.find({ isActive: true });
+    },
+  },
   Mutation: {
     loginUser: async (_, { email, password, fcmtoken }) => {
       try {
@@ -16,7 +27,6 @@ const resolvers = {
         }
 
         const user = await User.findOne({ email });
-        console.log("LOGIN USER:", user);
 
         if (!user) {
           return {
@@ -82,6 +92,22 @@ const resolvers = {
           user: null,
         };
       }
+    },
+    addGenre: async (_, { name, value }) => {
+      const genre = await Genre.create({
+        name,
+        value,
+      });
+      return genre;
+    },
+
+    addLanguage: async (_, { name, value }) => {
+      const language = await Language.create({
+        name,
+        value,
+      });
+
+      return language;
     },
     addUser: async (_, { name, email, mobile, password, fcmtoken }) => {
       try {
@@ -152,6 +178,48 @@ const resolvers = {
           token: null,
           user: null,
         };
+      }
+    },
+    addBooks: async (
+      _,
+      {
+        title,
+        author,
+        description,
+        genre,
+        language,
+        isbn,
+        publisher,
+        publishedDate,
+        numberOfPages,
+        rating,
+        tags,
+        trending,
+        popular,
+        coverImage,
+      },
+    ) => {
+      try {
+        const newBook = await Book.create({
+          title,
+          author,
+          description,
+          genre,
+          language,
+          isbn,
+          publisher,
+          publishedDate,
+          numberOfPages,
+          rating,
+          tags,
+          trending,
+          popular,
+          coverImage,
+        });
+        return newBook;
+      } catch (error) {
+        console.log("GraphQL Add Book Error:", error);
+        throw new Error("Failed to add book");
       }
     },
   },

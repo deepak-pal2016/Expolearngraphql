@@ -43,16 +43,27 @@ import {
 import { Colors, Icon, Typography, Images } from "@constant/index";
 import { cardShadow } from "@constant/index";
 import { ThemeContext } from "../../../context/themeContext";
-import { UserData, UserDataContext } from "../../../context/userDataContext";
 import { LocalStorage } from "@helpers/localstorage";
 import { UsePagination } from "../../../hooks/usepagination";
 import { showError, showSuccess } from "@components/Flashmessge";
 import useAuthStore from "@/store/authStore";
+import { GET_GENRES, GET_LANGUAGES } from "@/services/queries/queriesservice";
+import { useQuery } from "@apollo/client/react";
+import { useGenreStore } from "@/store/genresStore";
+import { useLanguageStore } from "@/store/languagesStore";
 
 type DashboardscreenNavigationType = NativeStackNavigationProp<
   HomeStackProps,
   "Dashboard"
 >;
+
+type GenresQueryData = {
+  genres: unknown[];
+};
+
+type LanguagesQueryData = {
+  languages: unknown[];
+};
 
 export const categories = [
   {
@@ -112,14 +123,25 @@ const Dashboard: FC = () => {
   const [selectcatid, setSelectCatId] = useState<number>(0);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = dashboardstyle(currentTheme);
-  const { setIsLoggedIn, setUserData, userData } = useContext<UserData>(UserDataContext);
   const user = useAuthStore((state) => state.user);
-   console.log(user,'user');
-  
+  const { data:genreData, loading:genderloading, error:genreerror } = useQuery<GenresQueryData>(GET_GENRES);
+  const { data:ldata,loading:lloading, error:lerror } = useQuery<LanguagesQueryData>(GET_LANGUAGES);
+  const setGenres = useGenreStore((state) => state.setGenres);
+  const setLanguages = useLanguageStore((state) => state.setLanguages);
   const insets = useSafeAreaInsets();
+ 
+  
+  useEffect(() => {
+    showLoader();
+    if (genreData?.genres) {
+      hideLoader();
+      setGenres(genreData.genres as Parameters<typeof setGenres>[0]);
+      setLanguages(ldata?.languages  as Parameters<typeof setLanguages>[0]);
+    }
+  }, [genreData, setGenres]);
   return (
     <View
-      style={[  
+      style={[
         styles.container,
         {
           paddingTop: insets.top,
@@ -146,7 +168,7 @@ const Dashboard: FC = () => {
           >
             <View style={{ flexDirection: "row" }}>
               <TextView style={styles.greeings}>
-                Hello, {`${userData?.name}`}
+                Hello, {`${user?.name}`}
               </TextView>
               <Image source={Images.ic_hi} style={styles.hiimg} />
             </View>
