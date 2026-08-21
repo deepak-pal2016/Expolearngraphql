@@ -21,6 +21,7 @@ import Attachment from '@components/Chatatachement/attachment';
 import PopularBooks from '@components/Popularbooks/popularbooks';
 import Recommneded from '@components/Recommendedbooks/recomended';
 import TopResults from '@components/Recommendedbooks/topresults';
+import DatePickerComponent from '@components/Datepicker/datepikcer';
 
 export {
   TextView,
@@ -44,7 +45,9 @@ export {
   Attachment,
   PopularBooks,
   Recommneded,
-  TopResults
+  TopResults,
+  DatePickerComponent
+  
   
   
 };

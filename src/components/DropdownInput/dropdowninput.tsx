@@ -49,11 +49,16 @@ const CustomDropdown: FC<CustomDropdownProps> = ({
   const { theme } = useContext(ThemeContext);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = createStyles(currentTheme);
-
   const handleSetValue = (callback: any) => {
     const newVal = typeof callback === "function" ? callback(value) : callback;
-    if (setValue) setValue(newVal);
-    if (onChangeValue) onChangeValue(newVal);
+
+    if (setValue) {
+      setValue(newVal);
+    }
+
+    if (onChangeValue) {
+      onChangeValue(newVal);
+    }
   };
 
   return (

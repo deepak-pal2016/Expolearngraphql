@@ -29,6 +29,7 @@ import {
   Recommneded,
   CustomDropdown,
   Button,
+  DatePickerComponent,
 } from "@components/index";
 import {
   SafeAreaInsetsContext,
@@ -40,6 +41,9 @@ import { useGenreStore } from "@/store/genresStore";
 import * as ImagePicker from "expo-image-picker";
 import { useLanguageStore } from "@/store/languagesStore";
 import { showError } from "@/components/Flashmessge";
+import { useFormik } from "formik";
+import { AddbookvaliationSchema } from "@/helpers/validations";
+import { useBookStore } from "@/store/booksStore";
 
 type AddBookdNavigationType = NativeStackNavigationProp<
   HomeStackProps,
@@ -47,8 +51,7 @@ type AddBookdNavigationType = NativeStackNavigationProp<
 >;
 
 const Addbooks: FC = () => {
-  const [trending, setTrending] = useState(false);
-  const [popular, setPopular] = useState(false);
+  const insets = useSafeAreaInsets();
   const [rating, setRating] = useState(0);
   const { showLoader, hideLoader } = CommonLoader();
   const [coverImage, setCoverImage] = useState<string | null>(null);
@@ -59,6 +62,8 @@ const Addbooks: FC = () => {
   const languages = useLanguageStore((state) => state.languages);
   const [selectedFile, setSelectedFile] = useState<any>([]);
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
+  const [publishedDate, setPublishedDate] = useState(new Date());
+  const { addBook, loading } = useBookStore();
 
   const genreOptions = genres.map((genre) => ({
     label: String(genre?.name ?? ""),
@@ -91,7 +96,8 @@ const Addbooks: FC = () => {
 
       if (response.canceled || !response.assets?.length) return;
       setSelectedFile(response.assets[0]);
-      console.log(response.assets[0], "response.assets[0]");
+      setFieldValue("coverImage", response.assets[0]);
+      setCoverImage(response.assets[0].uri);
     } catch (error: any) {
       setShowAttachmentModal(false);
       const errorMessage =
@@ -107,6 +113,7 @@ const Addbooks: FC = () => {
   const openCamera = async () => {
     try {
       const hasPermission = await requestCameraPermission();
+
       if (!hasPermission) {
         console.log("Camera permission denied");
         return;
@@ -121,18 +128,89 @@ const Addbooks: FC = () => {
       if (response.canceled || !response.assets?.length) {
         return;
       }
+
+      const image = response.assets[0];
+
       setShowAttachmentModal(false);
-      setSelectedFile(response.assets[0]);
+
+      setSelectedFile(image);
+
+      // Formik value
+      setFieldValue("coverimg", image);
+
+      // Image UI ke liye
+      setCoverImage(image.uri);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error
           ? error.message
           : "An error occurred while adding the task";
+
       showError(errorMessage);
     } finally {
       hideLoader();
     }
   };
+
+  const { values, errors, touched, handleSubmit, handleChange, setFieldValue } =
+    useFormik({
+      validationSchema: AddbookvaliationSchema,
+      initialValues: {
+        initialValues: {
+          coverImage: null,
+          title: "",
+          author: "",
+          description: "",
+          genre: "",
+          language: "",
+          isbn: "",
+          publisher: "",
+          numberOfPages: "",
+          rating: "",
+          publishedDate: null,
+          tags: "",
+          trending: false,
+          popular: false,
+        },
+      },
+      onSubmit: async (datas: any) => {
+         console.log("FORM SUBMIT DATA:", datas);
+        try {
+          showLoader();
+          const response = await addBook({
+            title: datas.title,
+            author: datas.author,
+            description: datas.description,
+            genre: datas.genre,
+            language: datas.language || null,
+            isbn: datas.isbn || null,
+            publisher: datas.publisher || null,
+            publishedDate: datas.publishedDate
+              ? new Date(datas.publishedDate).toISOString()
+              : null,
+            numberOfPages: datas.numberOfPages
+              ? Number(datas.numberOfPages)
+              : null,
+            rating: Number(datas.rating),
+            tags: datas.tags
+              ? datas.tags
+                  .split(",")
+                  .map((tag: string) => tag.trim())
+                  .filter(Boolean)
+              : [],
+            trending: datas.trending,
+            popular: datas.popular,
+            coverImage: datas.coverImage,
+          });
+          console.log(response, "response");
+        } catch (error: any) {
+          console.log("ADD BOOK ERROR:", error);
+          showError(error?.message || "Book add failed");
+        } finally {
+          hideLoader();
+        }
+      },
+    });
 
   const renderInput = (
     label: string,
@@ -170,7 +248,7 @@ const Addbooks: FC = () => {
       </View>
     );
   };
-  const insets = useSafeAreaInsets();
+
   function setSelectedGenre(value: any): void {
     throw new Error("Function not implemented.");
   }
@@ -193,7 +271,7 @@ const Addbooks: FC = () => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          <TouchableOpacity onPress={()=> openCamera()} style={styles.coverUpload}>
+          <TouchableOpacity onPress={openCamera} style={styles.coverUpload}>
             {coverImage ? (
               <Image source={{ uri: coverImage }} style={styles.coverImage} />
             ) : (
@@ -205,6 +283,7 @@ const Addbooks: FC = () => {
                     size={55}
                     color="#344057"
                   />
+
                   <View style={styles.cameraButton}>
                     <Icon
                       family="Ionicons"
@@ -214,9 +293,11 @@ const Addbooks: FC = () => {
                     />
                   </View>
                 </View>
+
                 <TextView style={styles.uploadTitle}>
                   Upload Book Cover
                 </TextView>
+
                 <TextView style={styles.uploadSubTitle}>
                   JPG, PNG up to 5MB
                 </TextView>
@@ -224,20 +305,30 @@ const Addbooks: FC = () => {
             )}
           </TouchableOpacity>
 
+          {touched.coverImage && errors.coverImage && (
+            <TextView
+              style={{
+                color: Colors.ERROR[100],
+                bottom: 10,
+                alignSelf: "center",
+              }}
+            >
+              {errors.coverImage}
+            </TextView>
+          )}
+
           {/* ================= FORM ================= */}
           <View style={styles.formContainer}>
             <View style={styles.inputWrapper}>
               <FloatingTextInput
                 lefticon={Images.ic_email}
                 style={{ width: wp(80), elevation: 0 }}
-                label={"Ttile"}
+                label={"Title"}
                 placeholder="Enter book title"
-                //  value={values.email}
-                //  error={errors.email}
-                //  touched={touched.email}
-                // onChangeText={(text: any) =>
-                // setFieldValue("email", text.replace(/\s/g, "").toLowerCase())
-                // }
+                value={values.title}
+                error={errors.title}
+                touched={touched.title}
+                onChangeText={(text: any) => setFieldValue("title", text)}
               />
             </View>
 
@@ -247,12 +338,10 @@ const Addbooks: FC = () => {
                 style={{ width: wp(80), elevation: 0 }}
                 label={"Author"}
                 placeholder="Enter author name"
-                //  value={values.email}
-                //  error={errors.email}
-                //  touched={touched.email}
-                // onChangeText={(text: any) =>
-                // setFieldValue("email", text.replace(/\s/g, "").toLowerCase())
-                // }
+                value={values.author}
+                error={errors.author}
+                touched={touched.author}
+                onChangeText={(text: any) => setFieldValue("author", text)}
               />
             </View>
 
@@ -262,12 +351,10 @@ const Addbooks: FC = () => {
                 style={{ width: wp(80), elevation: 0 }}
                 label={"Description"}
                 placeholder="Enter book description"
-                //  value={values.email}
-                //  error={errors.email}
-                //  touched={touched.email}
-                // onChangeText={(text: any) =>
-                // setFieldValue("email", text.replace(/\s/g, "").toLowerCase())
-                // }
+                value={values.description}
+                error={errors.description}
+                touched={touched.description}
+                onChangeText={(text: any) => setFieldValue("description", text)}
               />
             </View>
             <View
@@ -289,10 +376,16 @@ const Addbooks: FC = () => {
                     style={{ width: wp(38) }}
                     placeholder="Choose options"
                     items={genreOptions}
-                    value={setSelectedGenre}
+                    value={values.genre}
                     dropDownLable="Genre"
-                    setValue={setSelectedGenre}
+                    setValue={(value: any) => setFieldValue("genre", value)}
                     leftIcon={Images.ic_description}
+                    error={
+                      typeof errors.genre === "string"
+                        ? errors.genre
+                        : undefined
+                    }
+                    touched={touched.genre}
                   />
                 </View>
               </View>
@@ -305,12 +398,18 @@ const Addbooks: FC = () => {
                 <View style={{ alignSelf: "flex-start", bottom: hp(4) }}>
                   <CustomDropdown
                     style={{ width: wp(38) }}
-                    placeholder="choose otpions"
+                    placeholder="Choose options"
                     dropDownLable="Language"
                     items={langOptions}
-                    value={setSelectedGenre}
+                    value={values.language}
+                    setValue={(value: any) => setFieldValue("language", value)}
                     leftIcon={Images.ic_description}
-                    setValue={setSelectedGenre}
+                    error={
+                      typeof errors.language === "string"
+                        ? errors.language
+                        : undefined
+                    }
+                    touched={touched.language}
                   />
                 </View>
               </View>
@@ -336,12 +435,10 @@ const Addbooks: FC = () => {
                     style={{ width: wp(38), elevation: 0 }}
                     label={"ISBN"}
                     placeholder="Enter isbn"
-                    //  value={values.email}
-                    //  error={errors.email}
-                    //  touched={touched.email}
-                    // onChangeText={(text: any) =>
-                    // setFieldValue("email", text.replace(/\s/g, "").toLowerCase())
-                    // }
+                    value={values.isbn}
+                    error={errors.isbn}
+                    touched={touched.isbn}
+                    onChangeText={(text: any) => setFieldValue("isbn", text)}
                   />
                 </View>
               </View>
@@ -357,12 +454,12 @@ const Addbooks: FC = () => {
                     style={{ width: wp(38), elevation: 0 }}
                     label={"Publisher"}
                     placeholder="Enter publisher"
-                    //  value={values.email}
-                    //  error={errors.email}
-                    //  touched={touched.email}
-                    // onChangeText={(text: any) =>
-                    // setFieldValue("email", text.replace(/\s/g, "").toLowerCase())
-                    // }
+                    value={values.publisher}
+                    error={errors.publisher}
+                    touched={touched.publisher}
+                    onChangeText={(text: any) =>
+                      setFieldValue("publisher", text)
+                    }
                   />
                 </View>
               </View>
@@ -383,17 +480,19 @@ const Addbooks: FC = () => {
                 }}
               >
                 <View style={{ alignSelf: "flex-start", bottom: hp(4) }}>
-                  <FloatingTextInput
-                    lefticon={Images.ic_email}
-                    style={{ width: wp(38), elevation: 0 }}
-                    label={"Published Date"}
-                    placeholder="Enter isbn"
-                    //  value={values.email}
-                    //  error={errors.email}
-                    //  touched={touched.email}
-                    // onChangeText={(text: any) =>
-                    // setFieldValue("email", text.replace(/\s/g, "").toLowerCase())
-                    // }
+                  <DatePickerComponent
+                    label="Published Date"
+                    value={publishedDate}
+                    onChange={(date: Date) => {
+                      setPublishedDate(date);
+                      setFieldValue("publishedDate", date, true);
+                    }}
+                    width={wp(38)}
+                    error={
+                      typeof errors.publishedDate === "string"
+                        ? errors.publishedDate
+                        : undefined
+                    }
                   />
                 </View>
               </View>
@@ -409,12 +508,13 @@ const Addbooks: FC = () => {
                     style={{ width: wp(38), elevation: 0 }}
                     label={"Number of pages"}
                     placeholder="Enter pages no."
-                    //  value={values.email}
-                    //  error={errors.email}
-                    //  touched={touched.email}
-                    // onChangeText={(text: any) =>
-                    // setFieldValue("email", text.replace(/\s/g, "").toLowerCase())
-                    // }
+                    keyboardType="numeric"
+                    value={values.numberOfPages}
+                    error={errors.numberOfPages}
+                    touched={touched.numberOfPages}
+                    onChangeText={(text: any) =>
+                      setFieldValue("numberOfPages", text)
+                    }
                   />
                 </View>
               </View>
@@ -422,12 +522,16 @@ const Addbooks: FC = () => {
 
             <View style={styles.inputGroup}>
               <TextView style={styles.label}>Rating (0 - 5)</TextView>
+
               <View style={styles.ratingContainer}>
                 <View style={styles.stars}>
                   {[1, 2, 3, 4, 5].map((item) => (
                     <TouchableOpacity
                       key={item}
-                      onPress={() => setRating(item)}
+                      onPress={() => {
+                        setRating(item);
+                        setFieldValue("rating", String(item));
+                      }}
                     >
                       <Icon
                         family="Ionicons"
@@ -444,24 +548,34 @@ const Addbooks: FC = () => {
                   {rating.toFixed(1)}
                 </TextView>
               </View>
-            </View>
 
+              {touched.rating && errors.rating && (
+                <TextView
+                  style={{
+                    color: Colors.ERROR[100],
+                    marginTop: 3,
+                    ...Typography.BodyRegular12,
+                  }}
+                >
+                  {errors.rating}
+                </TextView>
+              )}
+            </View>
             <View style={styles.inputWrapper}>
               <FloatingTextInput
                 lefticon={Images.ic_email}
                 style={{ width: wp(80), elevation: 0 }}
                 label={"Tags/Keywords"}
                 placeholder="Enter tags separated by commas"
-                //  value={values.email}
-                //  error={errors.email}
-                //  touched={touched.email}
-                // onChangeText={(text: any) =>
-                // setFieldValue("email", text.replace(/\s/g, "").toLowerCase())
-                // }
+                value={values.tags}
+                error={errors.tags}
+                touched={touched.tags}
+                onChangeText={(text: any) =>
+                  setFieldValue("tags", text.replace(/\s/g, "").toLowerCase())
+                }
               />
             </View>
 
-            {/* ================= SWITCHES ================= */}
             <View style={styles.switchRow}>
               <View style={styles.switchBox}>
                 <View style={styles.switchLeft}>
@@ -476,8 +590,9 @@ const Addbooks: FC = () => {
                 </View>
 
                 <Switch
-                  value={trending}
-                  onValueChange={setTrending}
+                  value={values.trending}
+                  //@ts-ignore
+                  onValueChange={(value) => setFieldValue("trending", value)}
                   trackColor={{
                     false: "#D9DDE5",
                     true: Colors.PRIMARY[100],
@@ -499,8 +614,9 @@ const Addbooks: FC = () => {
                 </View>
 
                 <Switch
-                  value={popular}
-                  onValueChange={setPopular}
+                  value={values.popular}
+                  //@ts-ignore
+                  onValueChange={(value) => setFieldValue("popular", value)}
                   trackColor={{
                     false: "#D9DDE5",
                     true: Colors.PRIMARY[100],
@@ -512,7 +628,7 @@ const Addbooks: FC = () => {
 
             <Button
               style={{ marginTop: hp(1), width: wp(89), alignSelf: "center" }}
-              onPress={() => console.log("===")}
+              onPress={handleSubmit}
               titleStyle={{
                 color: Colors.SECONDARY[100],
                 ...Typography.BodyBold14,

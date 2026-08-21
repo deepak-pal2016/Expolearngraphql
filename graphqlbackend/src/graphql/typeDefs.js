@@ -87,7 +87,7 @@ const typeDefs = gql`
       publisher: String
       publishedDate: String
       numberOfPages: Int
-      rating: String!
+      rating: Float!
       tags: [String!]
       trending: Boolean!
       popular: Boolean!

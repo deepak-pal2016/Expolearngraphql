@@ -124,21 +124,33 @@ const Dashboard: FC = () => {
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = dashboardstyle(currentTheme);
   const user = useAuthStore((state) => state.user);
-  const { data:genreData, loading:genderloading, error:genreerror } = useQuery<GenresQueryData>(GET_GENRES);
-  const { data:ldata,loading:lloading, error:lerror } = useQuery<LanguagesQueryData>(GET_LANGUAGES);
+  const {
+    data: genreData,
+    loading: genderloading,
+    error: genreerror,
+  } = useQuery<GenresQueryData>(GET_GENRES);
+  const {
+    data: ldata,
+    loading: lloading,
+    error: lerror,
+  } = useQuery<LanguagesQueryData>(GET_LANGUAGES);
   const setGenres = useGenreStore((state) => state.setGenres);
   const setLanguages = useLanguageStore((state) => state.setLanguages);
   const insets = useSafeAreaInsets();
- 
-  
+
   useEffect(() => {
-    showLoader();
     if (genreData?.genres) {
-      hideLoader();
       setGenres(genreData.genres as Parameters<typeof setGenres>[0]);
-      setLanguages(ldata?.languages  as Parameters<typeof setLanguages>[0]);
     }
-  }, [genreData, setGenres]);
+
+    if (ldata?.languages) {
+      setLanguages(ldata.languages as Parameters<typeof setLanguages>[0]);
+    }
+
+    if (genreData?.genres && ldata?.languages) {
+      hideLoader();
+    }
+  }, [genreData, ldata, setGenres, setLanguages]);
   return (
     <View
       style={[
