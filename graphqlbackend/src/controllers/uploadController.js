@@ -6,7 +6,6 @@ const uploadAudio = (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: 'No file uploaded' });
     }
-
     console.log('FILE:', req.file);
 
     const folderName = path.basename(req.file.destination);

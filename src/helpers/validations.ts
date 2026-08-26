@@ -45,21 +45,36 @@ const TaskstatusSchema = Yup.object().shape({
 });
 
 const AddbookvaliationSchema = Yup.object().shape({
-  coverimg: Yup.object().nullable().required("Book cover image is required"),
+  coverImage: Yup.object().nullable().required("Book cover image is required"),
+
   title: Yup.string().trim().required("Book title is required"),
+
   author: Yup.string().trim().required("Author name is required"),
-  descripton: Yup.string().trim().required("Description is required"),
+
+  description: Yup.string().trim().required("Description is required"),
+
   genre: Yup.string().required("Genre is required"),
+
   language: Yup.string().required("Language is required"),
+
   isbn: Yup.string().trim().required("ISBN is required"),
-  publisher_name: Yup.string().trim().required("Publisher is required"),
-  numberofpages: Yup.string().trim().required("Number of pages is required"),
+
+  publisher: Yup.string().trim().required("Publisher is required"),
+
+  numberOfPages: Yup.string().trim().required("Number of pages is required"),
+
   publishedDate: Yup.date().nullable().required("Published date is required"),
-  ratings: Yup.number()
+
+  rating: Yup.number()
     .min(1, "Please select rating")
     .max(5, "Rating cannot be more than 5")
     .required("Rating is required"),
+
   tags: Yup.string().trim().required("Tags/Keywords are required"),
+
+  trending: Yup.boolean(),
+
+  popular: Yup.boolean(),
 });
 
 export {
@@ -67,5 +82,5 @@ export {
   SignupvalidSchema,
   TaskSchema,
   TaskstatusSchema,
-  AddbookvaliationSchema
+  AddbookvaliationSchema,
 };

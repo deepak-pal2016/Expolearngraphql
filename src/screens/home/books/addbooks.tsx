@@ -37,13 +37,13 @@ import {
 } from "react-native-safe-area-context";
 import { Colors, Icon, Images, Typography } from "@/constant/index";
 import { ThemeContext } from "@/context/themeContext";
-import { useGenreStore } from "@/store/genresStore";
+import { useGenreStore } from "@/zustand/store/genresStore";
 import * as ImagePicker from "expo-image-picker";
-import { useLanguageStore } from "@/store/languagesStore";
+import { useLanguageStore } from "@/zustand/store/languagesStore";
 import { showError } from "@/components/Flashmessge";
 import { useFormik } from "formik";
 import { AddbookvaliationSchema } from "@/helpers/validations";
-import { useBookStore } from "@/store/booksStore";
+import { useBookStore } from "@/zustand/store/booksStore";
 
 type AddBookdNavigationType = NativeStackNavigationProp<
   HomeStackProps,
@@ -113,7 +113,6 @@ const Addbooks: FC = () => {
   const openCamera = async () => {
     try {
       const hasPermission = await requestCameraPermission();
-
       if (!hasPermission) {
         console.log("Camera permission denied");
         return;
@@ -132,13 +131,8 @@ const Addbooks: FC = () => {
       const image = response.assets[0];
 
       setShowAttachmentModal(false);
-
       setSelectedFile(image);
-
-      // Formik value
-      setFieldValue("coverimg", image);
-
-      // Image UI ke liye
+      setFieldValue("coverImage", image);
       setCoverImage(image.uri);
     } catch (error: unknown) {
       const errorMessage =
@@ -156,25 +150,23 @@ const Addbooks: FC = () => {
     useFormik({
       validationSchema: AddbookvaliationSchema,
       initialValues: {
-        initialValues: {
-          coverImage: null,
-          title: "",
-          author: "",
-          description: "",
-          genre: "",
-          language: "",
-          isbn: "",
-          publisher: "",
-          numberOfPages: "",
-          rating: "",
-          publishedDate: null,
-          tags: "",
-          trending: false,
-          popular: false,
-        },
+        coverImage: null,
+        title: "",
+        author: "",
+        description: "",
+        genre: "",
+        language: "",
+        isbn: "",
+        publisher: "",
+        numberOfPages: "",
+        rating: "",
+        publishedDate: null,
+        tags: "",
+        trending: false,
+        popular: false,
       },
       onSubmit: async (datas: any) => {
-         console.log("FORM SUBMIT DATA:", datas);
+        console.log("FORM SUBMIT DATA:", datas);
         try {
           showLoader();
           const response = await addBook({
@@ -200,7 +192,7 @@ const Addbooks: FC = () => {
               : [],
             trending: datas.trending,
             popular: datas.popular,
-            coverImage: datas.coverImage,
+            coverImage: datas.coverImage?.uri,
           });
           console.log(response, "response");
         } catch (error: any) {

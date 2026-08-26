@@ -40,7 +40,7 @@ import { showError, showSuccess } from "@components/Flashmessge";
 import { LocalStorage } from "@helpers/localstorage";
 import { useMutation } from "@apollo/client/react";
 import { ADD_USER } from "@/graphqls/mutations/auth";
-import useAuthStore from "@/store/authStore";
+import useAuthStore from "@/zustand/store/authStore";
 
 type SignupscreenNavigationType = NativeStackNavigationProp<
   AuthStackProps,

@@ -12,6 +12,7 @@ import {
   PermissionsAndroid,
   Platform,
   ScrollView,
+  Alert,
 } from "react-native";
 import React, { FC, useContext, useEffect, useState } from "react";
 import {
@@ -44,7 +45,9 @@ import { LocalStorage } from "@helpers/localstorage";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { Socket } from "socket.io-client";
 import * as ImagePicker from "expo-image-picker";
-import useAuthStore from "@/store/authStore";
+import useAuthStore from "@/zustand/store/authStore";
+import { LOGIN_USER } from "@/graphqls/mutations/auth";
+import { useMutation } from "@apollo/client";
 type ProfilescreenNavigationType = NativeStackNavigationProp<
   HomeStackProps,
   "Profile"
@@ -72,30 +75,22 @@ const Profile: FC<ProfileScreenProps> = ({
   const styles = profileStyles(currentTheme);
   const [selectedFile, setSelectedFile] = useState<any>([]);
   const [showAttachmentModal, setShowAttachmentModal] = useState(false);
-  const user = useAuthStore((state)=> state.user);
-
-  // useEffect(() => {
-  //  getvalue()
-  // }, []);
-
-  // const getvalue = async () => {
-  //   let val = await LocalStorage.read('@login');
-  //   let user = await LocalStorage.read('@user');
-  //   console.log(val, user,'user===');
-  // }
-
-  // rtk query logout
-  //   const handleLogout = async () => {
-  //   dispatch(logout());
-  //   setIsLoggedIn(false);
-  //   await LocalStorage.save('@login', false);
-  //   await LocalStorage.flushQuestionKeys();
-  //   showSuccess('Logout Successfully..');
-  // };
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
 
   const handlelogout = async () => {
     try {
-
+      Alert.alert("Logout", "Are you sure you want to logout?", [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: () => logout(),
+        },
+      ]);
     } catch (error: any) {
       console.log(error, "logout error");
       showError(error?.message || "Something went wrong");
@@ -124,7 +119,6 @@ const Profile: FC<ProfileScreenProps> = ({
       if (response.canceled || !response.assets?.length) return;
       setSelectedFile(response.assets[0]);
       console.log(response.assets[0], "response.assets[0]");
-    
     } catch (error: any) {
       setShowAttachmentModal(false);
       const errorMessage =

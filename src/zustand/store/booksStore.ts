@@ -39,3 +39,43 @@ export const useBookStore = create<BookStore>((set) => ({
     }
   },
 }));
+
+export interface Chapter {
+  chapterNumber: number;
+  title: string;
+  content: string;
+  pages: number;
+}
+
+
+export interface Book {
+  id: string;
+  title: string;
+  author: string;
+  description: string;
+  coverimage: string;
+  genre: string[];
+  language: string;
+  isbn: string;
+  publisher: string;
+  publishedDate: string;
+  pages: number;
+  rating: number;
+  totalreviews: number;
+  isTrending: boolean;
+  isPopular: boolean;
+  chapters: Chapter[];
+}
+
+
+interface Bookdata {
+  books: Book[];
+  setBooks: (books: Book[]) => void;
+  clearBooks: () => void;
+}
+
+export const useFetchbookstore = create<Bookdata>((set)=> ({
+  books:[],
+  setBooks:(books) => set({books}),
+  clearBooks: () => set({ books: [] }),
+}));

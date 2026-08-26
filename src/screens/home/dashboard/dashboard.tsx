@@ -46,11 +46,16 @@ import { ThemeContext } from "../../../context/themeContext";
 import { LocalStorage } from "@helpers/localstorage";
 import { UsePagination } from "../../../hooks/usepagination";
 import { showError, showSuccess } from "@components/Flashmessge";
-import useAuthStore from "@/store/authStore";
-import { GET_GENRES, GET_LANGUAGES } from "@/services/queries/queriesservice";
+import useAuthStore from "@/zustand/store/authStore";
+import {
+  GET_BOOKS,
+  GET_GENRES,
+  GET_LANGUAGES,
+} from "@/services/queries/queriesservice";
 import { useQuery } from "@apollo/client/react";
-import { useGenreStore } from "@/store/genresStore";
-import { useLanguageStore } from "@/store/languagesStore";
+import { useGenreStore } from "@/zustand/store/genresStore";
+import { useLanguageStore } from "@/zustand/store/languagesStore";
+import { useFetchbookstore } from "@/zustand/store/booksStore";
 
 type DashboardscreenNavigationType = NativeStackNavigationProp<
   HomeStackProps,
@@ -63,6 +68,10 @@ type GenresQueryData = {
 
 type LanguagesQueryData = {
   languages: unknown[];
+};
+
+type BooksQueryData = {
+  books: unknown[];
 };
 
 export const categories = [
@@ -136,21 +145,40 @@ const Dashboard: FC = () => {
   } = useQuery<LanguagesQueryData>(GET_LANGUAGES);
   const setGenres = useGenreStore((state) => state.setGenres);
   const setLanguages = useLanguageStore((state) => state.setLanguages);
+  const {
+    data: bdata,
+    loading: bloading,
+    error: berror,
+  } = useQuery<BooksQueryData>(GET_BOOKS);
+  const setBooks = useFetchbookstore((state) => state.setBooks);
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
-    if (genreData?.genres) {
-      setGenres(genreData.genres as Parameters<typeof setGenres>[0]);
-    }
-
-    if (ldata?.languages) {
-      setLanguages(ldata.languages as Parameters<typeof setLanguages>[0]);
-    }
-
-    if (genreData?.genres && ldata?.languages) {
+    try {
+      showLoader();
+      if (bdata?.books) {
+        setBooks(bdata.books as Parameters<typeof setBooks>[0]);
+      }
+      if (genreData?.genres) {
+        setGenres(genreData.genres as Parameters<typeof setGenres>[0]);
+      }
+      if (ldata?.languages) {
+        setLanguages(ldata.languages as Parameters<typeof setLanguages>[0]);
+      }
+      if (genreData?.genres && ldata?.languages) {
+        hideLoader();
+      }
+    } catch (error) {
+    } finally {
       hideLoader();
     }
-  }, [genreData, ldata, setGenres, setLanguages]);
+  }, [bdata, genreData, ldata, setBooks, setGenres, setLanguages]);
+
+  const books = (bdata?.books ?? []) as Parameters<typeof setBooks>[0];
+  const isPopularbooks = books.filter((item) => item?.isPopular === true);
+  const isrecomnedbooks = books.filter((item) => item?.isPopular !== true);
+    
+
   return (
     <View
       style={[
@@ -283,87 +311,8 @@ const Dashboard: FC = () => {
               </ScrollView>
             </View>
           </View>
-          <PopularBooks />
-          <Recommneded />
-
-          {/* <Pressable
-          onPress={() => navigation.navigate("Tasklist")}
-          style={{
-            padding: hp(2),
-            justifyContent: "flex-end",
-            alignItems: "flex-end",
-          }}
-        >
-          <TextView
-            style={{
-              color: currentTheme?.text,
-              ...Typography.BodyRegular13,
-              textAlign: "right",
-              textDecorationLine: "underline",
-            }}
-          >
-            View All Task{" "}
-          </TextView>
-        </Pressable> */}
-          {/* <View style={styles.taskcontainer}>
-          <TextView style={styles.recenttile}>Recent Task</TextView>
-          <View>
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                flexDirection: "row",
-              }}
-            >
-              <TextView
-                style={[styles.recenttile, { ...Typography.BodyRegular13 }]}
-              >
-                Today
-              </TextView>
-              <Icon
-                family="Ionicons"
-                name="chevron-forward-sharp"
-                color={Colors.SECONDARY[200]}
-                size={15}
-              />
-            </View>
-          </View>
-        </View> */}
-          {/* <View style={{ bottom: hp(3) }}>
-          <FlatList
-            data={data}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={renderItem}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={{
-              paddingBottom: hp(33) + insets.bottom,
-            }}
-            removeClippedSubviews={true}
-            onEndReached={loadMore}
-            windowSize={5}
-            refreshing={refreshing}
-            onRefresh={onrefresh}
-            maxToRenderPerBatch={2}
-            initialNumToRender={2}
-            ListFooterComponent={
-              loading ? (
-                <ActivityIndicator size="large" color={Colors.PRIMARY[100]} />
-              ) : !hasMore ? (
-                <TextView
-                  style={{
-                    textAlign: "center",
-                    padding: 10,
-                    color: Colors.SECONDARY[400],
-                    ...Typography.BodyRegular12,
-                  }}
-                >
-                  No more records available!
-                </TextView>
-              ) : null
-            }
-          />
-        </View> */}
+          <PopularBooks books={isPopularbooks}/>
+          <Recommneded books={isrecomnedbooks} />
         </View>
       </ScrollView>
     </View>

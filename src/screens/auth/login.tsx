@@ -41,7 +41,7 @@ import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import { useMutation } from "@apollo/client/react";
 import { LOGIN_USER } from "@/graphqls/mutations/auth";
-import useAuthStore from "@/store/authStore";
+import useAuthStore from "@/zustand/store/authStore";
 import { SignInValidationSchema } from "@/helpers/validations";
 type LoginscreenNavigationType = NativeStackNavigationProp<
   AuthStackProps,

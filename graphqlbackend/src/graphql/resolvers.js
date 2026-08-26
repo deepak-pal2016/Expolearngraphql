@@ -13,6 +13,9 @@ const resolvers = {
     languages: async () => {
       return await Language.find({ isActive: true });
     },
+    books:async() => {
+      return await Book.find()
+    }
   },
   Mutation: {
     loginUser: async (_, { email, password, fcmtoken }) => {
@@ -197,6 +200,7 @@ const resolvers = {
         trending,
         popular,
         coverImage,
+        chapters,
       },
     ) => {
       try {
@@ -215,7 +219,9 @@ const resolvers = {
           trending,
           popular,
           coverImage,
+          chapters,
         });
+
         return newBook;
       } catch (error) {
         console.log("GraphQL Add Book Error:", error);

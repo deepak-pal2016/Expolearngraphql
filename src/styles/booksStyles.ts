@@ -561,8 +561,8 @@ const bookStyles = (theme: any) =>
     },
 
     coverImage: {
-      width: "100%",
-      height: "100%",
+      width: "120%",
+      height: "70%",
       borderRadius: 23,
       resizeMode: "cover",
     },

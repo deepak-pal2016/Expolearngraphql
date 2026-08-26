@@ -15,7 +15,7 @@ import * as Network from "expo-network";
 import { CommonLoader, CommonAlertModal } from "@components/index";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { navigationRef } from "../utils/NavigationService";
-import useAuthStore from "@/store/authStore";
+import useAuthStore from "@/zustand/store/authStore";
 
 const Route: FC = () => {
   const [userLogin, setUserLogin] = useState<any>(undefined);

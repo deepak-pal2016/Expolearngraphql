@@ -12,57 +12,22 @@ type Book = {
   title: string;
   author: string;
   rating: number;
-  image?: string;
+  coverimage?: string;
 };
 
-const sampleBooks: Book[] = [
-  {
-    id: '1',
-    title: 'The Silent Patient',
-    author: 'Alex Michaelides',
-    rating: 4.8,
-    image: 'https://images.unsplash.com/photo-1529270292268-6b6f9b9d6b6f?auto=format&fit=crop&w=400&q=60',
-  },
-  {
-    id: '2',
-    title: 'Where the Crawdads Sing',
-    author: 'Delia Owens',
-    rating: 4.7,
-    image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=60',
-  },
-  {
-    id: '3',
-    title: 'The Midnight Library',
-    author: 'Matt Haig',
-    rating: 4.6,
-    image: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=400&q=60',
-  },
-  {
-    id: '4',
-    title: 'The Vanishing Half',
-    author: 'Brit Bennett',
-    rating: 4.5,
-    image: 'https://images.unsplash.com/photo-1528209392409-6c6e1a1b6b8b?auto=format&fit=crop&w=400&q=60',
-  },
-  {
-    id: '5',
-    title: 'Atomic Habits',
-    author: 'James Clear',
-    rating: 4.9,
-    image: 'https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=400&q=60',
-  },
-];
+
+
 
 type ReconmededProps = {
   books?: Book[];
   onViewAll?: () => void;
 };
 
-const Recommneded: React.FC<ReconmededProps> = ({ books = sampleBooks, onViewAll }) => {
+const Recommneded: React.FC<ReconmededProps> = ({ books, onViewAll }) => {
   const renderCard = ({ item }: { item: Book }) => (
     <View style={styles.bookCard}>
-      {item.image ? (
-        <Image source={{ uri: item.image }} style={styles.coverImage} />
+      {item.coverimage ? (
+        <Image source={{ uri: item.coverimage }} style={styles.coverImage} />
       ) : (
         <View style={styles.coverPlaceholder} />
       )}

@@ -12,22 +12,31 @@ const typeDefs = gql`
     createdAt: String
   }
 
+  type Chapter {
+    id: ID!
+    chapterNumber: Int!
+    title: String!
+    content: String!
+    pages: Int
+  }
+
   type Book {
     id: ID!
     title: String!
     author: String!
     description: String
-    genre: String!
+    coverimage: String
+    genre: [String!]
     language: String
     isbn: String
     publisher: String
     publishedDate: String
-    numberOfPages: Int
+    pages: Int
     rating: Float
-    tags: [String!]
-    trending: Boolean!
-    popular: Boolean!
-    coverImage: String
+    totalreviews: Int
+    isTrending: Boolean!
+    isPopular: Boolean!
+    chapters: [Chapter!]
     createdAt: String
   }
 
@@ -56,10 +65,18 @@ const typeDefs = gql`
     user: User
   }
 
+  input ChapterInput {
+    chapterNumber: Int!
+    title: String!
+    content: String!
+    pages: Int
+  }
+
   type Query {
     _empty: String
     genres: [Genre!]!
     languages: [Language!]!
+    books: [Book]
   }
 
   type Mutation {
@@ -81,20 +98,22 @@ const typeDefs = gql`
       title: String!
       author: String!
       description: String!
-      genre: String!
+      coverimage: String
+      genre: [String!]
       language: String
       isbn: String
       publisher: String
       publishedDate: String
-      numberOfPages: Int
-      rating: Float!
-      tags: [String!]
-      trending: Boolean!
-      popular: Boolean!
-      coverImage: String!
+      pages: Int
+      rating: Float
+      totalreviews: Int
+      isTrending: Boolean
+      isPopular: Boolean
+      chapters: [ChapterInput!]
     ): Book!
 
     addGenre(name: String!, value: String!): Genre!
+
     addLanguage(name: String!, value: String!): Language!
   }
 `;
