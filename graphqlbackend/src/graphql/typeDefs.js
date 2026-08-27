@@ -26,7 +26,7 @@ const typeDefs = gql`
     author: String!
     description: String
     coverimage: String
-    genre: [String!]
+    genre: String!
     language: String
     isbn: String
     publisher: String
@@ -99,7 +99,7 @@ const typeDefs = gql`
       author: String!
       description: String!
       coverimage: String
-      genre: [String!]
+      genre: String!
       language: String
       isbn: String
       publisher: String

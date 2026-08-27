@@ -278,7 +278,7 @@ const Dashboard: FC = () => {
                   alignItems: "center",
                 }}
               >
-                {categories?.map((item: any, index: number) => (
+                {genreData?.genres?.map((item: any, index: number) => (
                   <Pressable
                     key={index}
                     onPress={() => setSelectCatId(index)}
@@ -304,14 +304,17 @@ const Dashboard: FC = () => {
                             : Colors.SECONDARY[200],
                       }}
                     >
-                      {item.title}
+                      {item.name}
                     </TextView>
                   </Pressable>
                 ))}
               </ScrollView>
             </View>
           </View>
-          <PopularBooks books={isPopularbooks}/>
+          <PopularBooks
+            books={isPopularbooks}
+            onViewAll={() => navigation.navigate('mybooks')}
+          />
           <Recommneded books={isrecomnedbooks} />
         </View>
       </ScrollView>

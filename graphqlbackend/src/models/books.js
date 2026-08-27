@@ -24,11 +24,10 @@ const bookSchema = new mongoose.Schema(
       default: "",
     },
 
-    genre: [
-      {
-        type: String,
-      },
-    ],
+    genre: {
+      type: String,
+      default: "",
+    },
 
     language: {
       type: String,
@@ -105,7 +104,7 @@ const bookSchema = new mongoose.Schema(
 
   {
     timestamps: true,
-  }
+  },
 );
 
 module.exports = mongoose.model("Book", bookSchema);

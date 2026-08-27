@@ -21,7 +21,6 @@ const Route: FC = () => {
   const [userLogin, setUserLogin] = useState<any>(undefined);
   const { showAlert, hideAlert } = CommonAlertModal();
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  console.log(isLoggedIn,'isLoggedIn');
   
 
   useEffect(() => {

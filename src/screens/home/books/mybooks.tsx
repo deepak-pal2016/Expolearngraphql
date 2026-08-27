@@ -1,165 +1,114 @@
 import React, { FC, useContext, useState } from "react";
 import {
   View,
-  Text,
-  StyleSheet,
   Image,
   TouchableOpacity,
   ScrollView,
-  SafeAreaView,
+  FlatList,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackProps } from "src/@types";
+
 import bookstyles from "../../../styles/booksStyles";
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "@constant/dimentions";
-import {
-  CommonLoader,
-  DarkTheme,
-  FloatingTextInput,
-  Header,
-  LightTheme,
-  PopularBooks,
-  TextView,
-  Recommneded,
-} from "@components/index";
+
+import { DarkTheme, Header, LightTheme, TextView } from "@components/index";
+
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, Icon } from "@/constant/index";
 import { ThemeContext } from "@/context/themeContext";
 import { useNavigation } from "@react-navigation/native";
+
+import { useFetchbookstore } from "@/zustand/store/booksStore";
 
 type MybooksNavigationType = NativeStackNavigationProp<
   HomeStackProps,
   "Mybooks"
 >;
 
-const PRIMARY = "#6C3DF5";
-const ORANGE = "#F07401";
-const TEXT = "#111827";
-const SUBTEXT = "#6B7280";
-const BORDER = "#E5E7EB";
-
 interface Book {
   id: string;
   title: string;
   author: string;
-  rating: string;
-  progress: number;
-  image: string;
+  description: string;
+  rating: number;
+  coverimage: string;
+  progress?: number;
 }
-
-const books: Book[] = [
-  {
-    id: "1",
-    title: "The Midnight Library",
-    author: "Matt Haig",
-    rating: "4.5",
-    progress: 60,
-    image: "https://covers.openlibrary.org/b/isbn/9780525559474-L.jpg",
-  },
-  {
-    id: "2",
-    title: "Atomic Habits",
-    author: "James Clear",
-    rating: "4.6",
-    progress: 80,
-    image: "https://covers.openlibrary.org/b/isbn/9780735211292-L.jpg",
-  },
-  {
-    id: "3",
-    title: "The Psychology of Money",
-    author: "Morgan Housel",
-    rating: "4.5",
-    progress: 20,
-    image: "https://covers.openlibrary.org/b/isbn/9780857197689-L.jpg",
-  },
-   {
-    id: "4",
-    title: "The Psychology of Money",
-    author: "Morgan Housel",
-    rating: "4.5",
-    progress: 20,
-    image: "https://covers.openlibrary.org/b/isbn/9780857197689-L.jpg",
-  },
-   {
-    id: "5",
-    title: "The Psychology of Money",
-    author: "Morgan Housel",
-    rating: "4.5",
-    progress: 20,
-    image: "https://covers.openlibrary.org/b/isbn/9780857197689-L.jpg",
-  },
-];
 
 const MyBooks: FC = () => {
   const [selectedTab, setSelectedTab] = useState("Currently Reading");
-  const { theme, themetoggle } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = bookstyles(currentTheme);
-  const navigation = useNavigation<MybooksNavigationType>()
-
+  const navigation = useNavigation<MybooksNavigationType>();
+  const insets = useSafeAreaInsets();
   const tabs = ["Currently Reading", "Completed", "Want to Read"];
+  const books = useFetchbookstore((state) => state.books);
 
-  const renderBook = (book: Book) => {
+  const renderBook = ({ item }: { item: Book }) => {
     return (
-      <TouchableOpacity
-        key={book.id}
-        activeOpacity={0.9}
-        style={styles.bookCard}
-      >
-        {/* Book Image */}
+      <TouchableOpacity activeOpacity={0.92} style={styles.bookCard}>
         <Image
-          source={{ uri: book.image }}
+          source={{
+            uri: item.coverimage,
+          }}
           style={styles.bookImage}
           resizeMode="cover"
         />
 
-        {/* Book Details */}
         <View style={styles.bookDetails}>
           <View style={styles.titleRow}>
             <View style={styles.titleContainer}>
               <TextView style={styles.bookTitle} numberOfLines={2}>
-                {book.title}
+                {item.title}
               </TextView>
-              <TextView style={styles.author}>{book.author}</TextView>
+              <TextView style={styles.author} numberOfLines={1}>
+                by {item.author}
+              </TextView>
             </View>
 
-            <TouchableOpacity style={styles.moreButton} activeOpacity={0.7}>
-              <Icon family='FontAwesome' name="ellipsis-v" size={18} color={TEXT} />
-            </TouchableOpacity>
-          </View>
+            <View style={styles.ratingBox}>
+              <Icon
+                family="FontAwesome"
+                name="star"
+                size={13}
+                color={Colors.PRIMARY[100]}
+              />
 
-          <View style={styles.ratingRow}>
-            <Icon family='FontAwesome' name="star" size={15} color={Colors.PRIMARY[100]} />
-            <TextView style={styles.rating}>{book.rating}</TextView>
+              <TextView style={styles.rating}>{item.rating}</TextView>
+            </View>
           </View>
-
+          <TextView style={styles.description} numberOfLines={2}>
+            {item.description}
+          </TextView>
           <View style={styles.progressRow}>
             <View style={styles.progressBackground}>
               <View
                 style={[
                   styles.progressFill,
                   {
-                    width: `${book.progress}%`,
+                    width: `${item.progress ?? 0}%`,
                   },
                 ]}
               />
             </View>
 
-            <TextView style={styles.progressText}>{book.progress}%</TextView>
+            <TextView style={styles.progressText}>
+              {item.progress ?? 0}%
+            </TextView>
           </View>
 
-          <TouchableOpacity activeOpacity={0.8} style={styles.continueButton}>
+          {/* ================= CONTINUE BUTTON ================= */}
+
+          <TouchableOpacity activeOpacity={0.85} style={styles.continueButton}>
             <TextView style={styles.continueText}>Continue Reading</TextView>
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
     );
   };
-  const insets = useSafeAreaInsets();
+
   return (
     <View
       style={[
@@ -171,9 +120,12 @@ const MyBooks: FC = () => {
         },
       ]}
     >
-     <Header showheader={false} showicons={false}  screenname="My Books" />
+      {/* ================= HEADER ================= */}
 
-      {/* Tabs */}
+      <Header showheader={false} showicons={false} screenname="My Books" />
+
+      {/* ================= TABS ================= */}
+
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -181,6 +133,7 @@ const MyBooks: FC = () => {
       >
         {tabs.map((tab) => {
           const active = selectedTab === tab;
+
           return (
             <TouchableOpacity
               key={tab}
@@ -188,7 +141,9 @@ const MyBooks: FC = () => {
               onPress={() => setSelectedTab(tab)}
               style={[styles.tab, active && styles.activeTab]}
             >
-              <TextView style={[styles.tabText, active && styles.activeTabText]}>
+              <TextView
+                style={[styles.tabText, active && styles.activeTabText]}
+              >
                 {tab}
               </TextView>
             </TouchableOpacity>
@@ -196,41 +151,76 @@ const MyBooks: FC = () => {
         })}
       </ScrollView>
 
-      {/* Books */}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.booksContainer}>
-        {selectedTab === "Currently Reading" && books.map(renderBook)}
-        {selectedTab === "Completed" && (
-          <View style={styles.emptyContainer}>
-            <Icon family="FontAwesome" name="book" size={45} color="#D1D5DB" />
-            <TextView style={styles.emptyTitle}>No completed books</TextView>
+      {/* ================= CURRENTLY READING ================= */}
 
-            <TextView style={styles.emptyText}>
-              Your completed books will appear here.
-            </TextView>
-          </View>
-        )}
+      {selectedTab === "Currently Reading" && (
+        <FlatList
+          data={books}
+          renderItem={renderBook}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={[
+            styles.booksContainer,
+            {
+              paddingBottom: 120,
+            },
+          ]}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Icon
+                family="FontAwesome"
+                name="book"
+                size={45}
+                color="#D1D5DB"
+              />
 
-        {selectedTab === "Want to Read" && (
-          <View style={styles.emptyContainer}>
-            <FontAwesome name="heart-o" size={45} color="#D1D5DB" />
+              <TextView style={styles.emptyTitle}>No books available</TextView>
 
-            <TextView style={styles.emptyTitle}>No books yet</TextView>
+              <TextView style={styles.emptyText}>
+                Your books will appear here.
+              </TextView>
+            </View>
+          }
+        />
+      )}
 
-            <TextView style={styles.emptyText}>
-              Add books that you want to read.
-            </TextView>
-          </View>
-        )}
+      {/* ================= COMPLETED ================= */}
 
-        <View style={{ height: 100 }} />
-      </ScrollView>
+      {selectedTab === "Completed" && (
+        <View style={styles.emptyContainer}>
+          <Icon family="FontAwesome" name="book" size={45} color="#D1D5DB" />
 
-      <TouchableOpacity onPress={()=> navigation.navigate('Addbooks')} activeOpacity={0.8} style={styles.floatingButton}>
+          <TextView style={styles.emptyTitle}>No completed books</TextView>
+
+          <TextView style={styles.emptyText}>
+            Your completed books will appear here.
+          </TextView>
+        </View>
+      )}
+
+      {/* ================= WANT TO READ ================= */}
+
+      {selectedTab === "Want to Read" && (
+        <View style={styles.emptyContainer}>
+          <FontAwesome name="heart-o" size={45} color="#D1D5DB" />
+
+          <TextView style={styles.emptyTitle}>No books yet</TextView>
+
+          <TextView style={styles.emptyText}>
+            Add books that you want to read.
+          </TextView>
+        </View>
+      )}
+
+      {/* ================= ADD BOOK ================= */}
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Addbooks")}
+        activeOpacity={0.8}
+        style={styles.floatingButton}
+      >
         <FontAwesome name="plus" size={22} color={Colors.SECONDARY[100]} />
       </TouchableOpacity>
-
     </View>
   );
 };

@@ -86,17 +86,8 @@ const bookStyles = (theme: any) =>
       paddingTop: hp(1),
     },
 
-    bookTitle: {
-      ...Typography.BodyBold13,
-      lineHeight: wp(6),
-      color: Colors.SECONDARY[500],
-    },
 
-    author: {
-      ...Typography.BodyRegular12,
-      color: Colors.SECONDARY[400],
-      marginTop: hp(0.8),
-    },
+ 
 
     ratingRow: {
       flexDirection: "row",
@@ -140,16 +131,14 @@ const bookStyles = (theme: any) =>
       color: "#606779",
     },
 
-    /* ---------------- DESCRIPTION ---------------- */
+    /* ---------------- description ---------------- */
 
-    descriptionContainer: {
-      marginTop: hp(2.2),
-    },
+ 
 
     description: {
-      ...Typography.BodyRegular13,
+      ...Typography.BodyBold12,
       color: "#697386",
-      lineHeight: hp(2.5),
+    
     },
 
     readMore: {
@@ -358,27 +347,7 @@ const bookStyles = (theme: any) =>
       elevation: 2,
     },
 
-    bookImage: {
-      width: 54,
-      height: 76,
-      borderRadius: 5,
-      backgroundColor: "#F3F4F6",
-    },
 
-    bookDetails: {
-      flex: 1,
-      marginLeft: 10,
-    },
-
-    titleRow: {
-      flexDirection: "row",
-      alignItems: "flex-start",
-    },
-
-    titleContainer: {
-      flex: 1,
-      paddingRight: 5,
-    },
 
     bookCardTitle: {
       fontSize: 12,
@@ -412,19 +381,7 @@ const bookStyles = (theme: any) =>
       color: Colors.PRIMARY[100],
     },
 
-    progressRow: {
-      flexDirection: "row",
-      alignItems: "center",
-      marginTop: 7,
-    },
-
-    progressBackground: {
-      flex: 1,
-      height: 4,
-      backgroundColor: "#E8E8EE",
-      borderRadius: 10,
-      overflow: "hidden",
-    },
+ 
 
     progressFill: {
       height: "100%",
@@ -593,13 +550,13 @@ const bookStyles = (theme: any) =>
     inputGroup: {
       marginBottom: 15,
       flex: 1,
-      bottom:hp(1.3)
+      bottom: hp(1.3),
     },
 
     label: {
       color: theme.text,
       ...Typography.BodyBold13,
-      bottom:6
+      bottom: 6,
     },
 
     inputContainer: {
@@ -696,9 +653,7 @@ const bookStyles = (theme: any) =>
       flex: 1,
     },
 
-    star: {
-      marginRight: 9,
-    },
+  
 
     ratingText: {
       fontSize: 18,
@@ -779,6 +734,80 @@ const bookStyles = (theme: any) =>
       color: Colors.PRIMARY[100],
       fontWeight: "700",
     },
+  
+
+    bookImage: {
+      width: 105,
+      height: 150,
+      borderRadius: 10,
+      backgroundColor: "#F3F4F6",
+    },
+
+    bookDetails: {
+      flex: 1,
+      marginLeft: 14,
+      justifyContent: "space-between",
+    },
+
+    titleRow: {
+      flexDirection: "row",
+      alignItems: "flex-start",
+      justifyContent: "space-between",
+    },
+
+    titleContainer: {
+      flex: 1,
+      paddingRight: 8,
+    },
+
+    bookTitle: {
+     ...Typography.BodyBold13,
+     color:Colors?.SECONDARY[400]
+    },
+
+    author: {
+  
+      marginTop: 4,
+      color: Colors.FLOATINGINPUT[400],
+      ...Typography.BodyRegular12
+    },
+
+    ratingBox: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: 4,
+      paddingHorizontal: 7,
+      paddingVertical: 4,
+      borderRadius: 8,
+      backgroundColor: "#FFF7ED",
+    },
+
+    rating: {
+      fontSize: 12,
+      fontWeight: "700",
+    },
+
+    
+
+    progressRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      marginTop: 6,
+    },
+
+    progressBackground: {
+      flex: 1,
+      height: 5,
+      borderRadius: 10,
+      backgroundColor: "#E5E7EB",
+      overflow: "hidden",
+    },
+
+   
+
+
+
+  
   });
 
 export default bookStyles;

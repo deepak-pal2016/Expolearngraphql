@@ -35,14 +35,14 @@ const styles =(theme:any) => StyleSheet.create({
   /* Screen Name Center */
   screenNameWrapper: {
     // position: 'absolute',
-    paddingVertical:hp(2),
+    paddingVertical:hp(1),
     top: hp(0),
     alignSelf: 'center',
   },
 
   screenname: {
-    color: theme?.text,
-    ...Typography.H5Medium18,
+    color: Colors.SECONDARY[100],
+    ...Typography.BodyBold15,
     padding:hp(1)
   },
 

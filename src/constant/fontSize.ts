@@ -131,6 +131,11 @@ const Typography = StyleSheet.create({
     fontSize: wp(3),
     lineHeight: 22,
   },
+    BodyBold12: {
+    fontFamily: Fonts.InterBold,
+    fontSize: wp(2.5),
+    lineHeight: 17,
+  },
 
 
   /* ----------------- SMALL TEXT ----------------- */
