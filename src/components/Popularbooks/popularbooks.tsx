@@ -22,7 +22,6 @@ type PopularBooksProps = {
 };
 
 const PopularBooks: React.FC<PopularBooksProps> = ({ books, onViewAll }) => {
-  console.log(books,'books==');
   
   const renderCard = ({ item }: { item: Book }) => (
     <View style={styles.bookCard}>

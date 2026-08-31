@@ -8,7 +8,7 @@ import {
   Authstacknavigator,
   BottomTabNavigator,
 } from "../navigation/index";
-import { StatusBar, BackHandler } from "react-native";
+import { StatusBar } from "expo-status-bar";
 const Stack = createNativeStackNavigator();
 import { Colors } from "../constant";
 import * as Network from "expo-network";
@@ -21,7 +21,6 @@ const Route: FC = () => {
   const [userLogin, setUserLogin] = useState<any>(undefined);
   const { showAlert, hideAlert } = CommonAlertModal();
   const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
-  
 
   useEffect(() => {
     getAsync();
@@ -100,7 +99,7 @@ const Route: FC = () => {
   return (
     <>
       <NavigationContainer ref={navigationRef}>
-        <StatusBar barStyle={"default"} backgroundColor={Colors.PRIMARY[100]} />
+        <StatusBar style="light" />
         <SafeAreaView style={{ flex: 1 }}>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             {isLoggedIn ? (

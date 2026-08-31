@@ -13,9 +13,9 @@ const resolvers = {
     languages: async () => {
       return await Language.find({ isActive: true });
     },
-    books:async() => {
-      return await Book.find()
-    }
+    books: async () => {
+      return await Book.find();
+    },
   },
   Mutation: {
     loginUser: async (_, { email, password, fcmtoken }) => {
@@ -203,6 +203,10 @@ const resolvers = {
         chapters,
       },
     ) => {
+      const totalPages = chapters?.reduce(
+        (total, chapter) => total + Number(chapter.pages || 0),
+        0,
+      );
       try {
         const newBook = await Book.create({
           title,
@@ -213,6 +217,7 @@ const resolvers = {
           isbn,
           publisher,
           publishedDate,
+          pages: totalPages,
           numberOfPages,
           rating,
           tags,

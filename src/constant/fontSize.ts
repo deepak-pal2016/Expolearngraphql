@@ -101,6 +101,11 @@ const Typography = StyleSheet.create({
     fontSize: wp(3),
     lineHeight: 20,
   },
+    BodyRegular11: {
+    fontFamily: Fonts.InterRegular,
+    fontSize: wp(2.7),
+    lineHeight: 18,
+  },
 
   BodyMedium14: {
     fontFamily: Fonts.InterMedium,
@@ -135,6 +140,11 @@ const Typography = StyleSheet.create({
     fontFamily: Fonts.InterBold,
     fontSize: wp(2.5),
     lineHeight: 17,
+  },
+   BodyBold11: {
+    fontFamily: Fonts.InterBold,
+    fontSize: wp(2.3),
+    lineHeight: 18,
   },
 
 

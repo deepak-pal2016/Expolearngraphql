@@ -23,7 +23,7 @@ import React, {
 } from "react";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { HomeStackProps } from "src/@types";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import dashboardstyle from "../../../styles/dashboardStyles";
 import {
@@ -53,12 +53,14 @@ type BookdetailsNavigationType = NativeStackNavigationProp<
 >;
 
 const Bookdetails: FC = () => {
+  const route: any = useRoute();
   const { showLoader, hideLoader } = CommonLoader();
   const navigation = useNavigation<BookdetailsNavigationType>();
   const { theme, themetoggle } = useContext(ThemeContext);
   const [selectcatid, setSelectCatId] = useState<number>(0);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = bookStyles(currentTheme);
+  const { itemdetails } = route?.params;
 
   const insets = useSafeAreaInsets();
   return (
@@ -72,107 +74,84 @@ const Bookdetails: FC = () => {
         },
       ]}
     >
-    
-        <Header showicons={true} title="Book Details" showheader={true} />
-        <ScrollView
+      <Header showicons={true} title="Book Details" showheader={true} />
+      <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
+        contentContainerStyle={styles.scrollContent}
+      >
         <View style={styles.bookSection}>
-
-          {/* Book Cover */}
           <View style={styles.coverContainer}>
             <Image
               source={{
-                uri: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=500&q=80',
+                uri: itemdetails?.coverimage,
               }}
               style={styles.bookCover}
             />
           </View>
 
-          {/* Details */}
           <View style={styles.bookInfo}>
-            <TextView style={styles.bookTitle}>
-              The Midnight{'\n'}Library
-            </TextView>
+            <TextView style={styles.bookTitle}>{itemdetails?.title}</TextView>
 
-            <TextView style={styles.author}>
-              Matt Haig
-            </TextView>
+            <TextView style={styles.author}>{itemdetails?.author}</TextView>
 
             <View style={styles.ratingRow}>
               <TextView style={styles.star}>★</TextView>
-              <TextView style={styles.rating}>4.5</TextView>
+              <TextView style={styles.rating}>{itemdetails?.rating}</TextView>
             </View>
 
             <Text style={styles.reviewCount}>
-              (12.4k reviews)
+              {`(${itemdetails?.totalreviews ?? 0} reviews)`}
             </Text>
 
             {/* Categories */}
             <View style={styles.categoryRow}>
               <View style={styles.category}>
-                <TextView style={styles.categoryText}>Fiction</TextView>
-              </View>
-
-              <View style={styles.category}>
-                <TextView style={styles.categoryText}>Fantasy</TextView>
+                <TextView style={styles.categoryText}>
+                  {itemdetails?.genre}
+                </TextView>
               </View>
             </View>
           </View>
         </View>
 
-
         <View style={styles.descriptionContainer}>
           <TextView style={styles.description}>
-            Between life and death there is a library, and within that
-            library, the shelves go on forever. Every book provides a
-            chance to live another life you could have lived...
+            {itemdetails?.description}
           </TextView>
-
-          <TouchableOpacity>
-            <TextView style={styles.readMore}>Read more</TextView>
-          </TouchableOpacity>
         </View>
 
-  
         <View style={styles.metaRow}>
           <View style={styles.metaItem}>
             <TextView style={styles.metaIcon}>▣</TextView>
-            <TextView style={styles.metaText}>256 pages</TextView>
+            <TextView style={styles.metaText}>
+              {itemdetails?.pages} Pages
+            </TextView>
           </View>
         </View>
 
         <View style={styles.actionRow}>
           <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("ReadBook", { bookcontent: itemdetails })
+            }
             activeOpacity={0.8}
-            style={styles.readButton}>
-            <TextView style={styles.readButtonText}>
-              Read Now
-            </TextView>
+            style={styles.readButton}
+          >
+            <TextView style={styles.readButtonText}>Read Now</TextView>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            activeOpacity={0.8}
-            style={styles.libraryButton}>
-            <TextView style={styles.libraryButtonText}>
-              Add to Library
-            </TextView>
+          <TouchableOpacity activeOpacity={0.8} style={styles.libraryButton}>
+            <TextView style={styles.libraryButtonText}>Add to Library</TextView>
           </TouchableOpacity>
         </View>
 
- 
         <View style={styles.reviewHeader}>
-          <TextView style={styles.reviewTitle}>
-            Reviews
-          </TextView>
+          <TextView style={styles.reviewTitle}>Reviews</TextView>
 
           <TouchableOpacity>
-            <TextView style={styles.viewAll}>
-              View all
-            </TextView>
+            <TextView style={styles.viewAll}>View all</TextView>
           </TouchableOpacity>
         </View>
-
 
         <View style={styles.reviewCard}>
           <View style={styles.reviewerTop}>
@@ -180,27 +159,19 @@ const Bookdetails: FC = () => {
               <TextView style={styles.avatarText}>👩🏻</TextView>
             </View>
             <View style={styles.reviewerInfo}>
-              <TextView style={styles.reviewerName}>
-                Sarah Johnson
-              </TextView>
+              <TextView style={styles.reviewerName}>Sarah Johnson</TextView>
               <View style={styles.reviewRating}>
-                <TextView style={styles.reviewStars}>
-                  ★★★★★
-                </TextView>
+                <TextView style={styles.reviewStars}>★★★★★</TextView>
               </View>
             </View>
-            <TextView style={styles.reviewDate}>
-              2 days ago
-            </TextView>
+            <TextView style={styles.reviewDate}>2 days ago</TextView>
           </View>
 
           <TextView style={styles.reviewText}>
-            A beautiful and thought-provoking book about choices and
-            regrets.
+            A beautiful and thought-provoking book about choices and regrets.
           </TextView>
         </View>
       </ScrollView>
-      
     </View>
   );
 };

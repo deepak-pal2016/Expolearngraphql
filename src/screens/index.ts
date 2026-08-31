@@ -10,6 +10,7 @@ import Forgotpassword from "@screens/home/password/forgotpassword";
 import Favoritebooks from "@screens/home/favoritebooks/favorite";
 import Addbooks from "@screens/home/books/addbooks"
 import Splash from "@screens/auth/spash/splash";
+import ReadBook from "@screens/home/books/readbook";
 
 
-export {Login,Dashboard, Signup,Search,Bookdetails,Profile,MyBooks,Forgotpassword,Favoritebooks,Addbooks,Splash}
+export {Login,Dashboard, Signup,Search,Bookdetails,Profile,MyBooks,Forgotpassword,Favoritebooks,Addbooks,Splash,ReadBook}

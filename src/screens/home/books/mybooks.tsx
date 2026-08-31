@@ -80,7 +80,9 @@ const MyBooks: FC = () => {
             </View>
           </View>
           <TextView style={styles.description} numberOfLines={2}>
-            {item.description}
+            {item?.description?.length > 90
+              ? `${item.description.slice(0, 90)}....`
+              : item?.description}
           </TextView>
           <View style={styles.progressRow}>
             <View style={styles.progressBackground}>
@@ -99,9 +101,13 @@ const MyBooks: FC = () => {
             </TextView>
           </View>
 
-          {/* ================= CONTINUE BUTTON ================= */}
-
-          <TouchableOpacity activeOpacity={0.85} style={styles.continueButton}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("Bookdetails", { itemdetails: item })
+            }
+            activeOpacity={0.85}
+            style={styles.continueButton}
+          >
             <TextView style={styles.continueText}>Continue Reading</TextView>
           </TouchableOpacity>
         </View>
@@ -184,8 +190,6 @@ const MyBooks: FC = () => {
         />
       )}
 
-      {/* ================= COMPLETED ================= */}
-
       {selectedTab === "Completed" && (
         <View style={styles.emptyContainer}>
           <Icon family="FontAwesome" name="book" size={45} color="#D1D5DB" />
@@ -198,8 +202,6 @@ const MyBooks: FC = () => {
         </View>
       )}
 
-      {/* ================= WANT TO READ ================= */}
-
       {selectedTab === "Want to Read" && (
         <View style={styles.emptyContainer}>
           <FontAwesome name="heart-o" size={45} color="#D1D5DB" />
@@ -211,8 +213,6 @@ const MyBooks: FC = () => {
           </TextView>
         </View>
       )}
-
-      {/* ================= ADD BOOK ================= */}
 
       <TouchableOpacity
         onPress={() => navigation.navigate("Addbooks")}

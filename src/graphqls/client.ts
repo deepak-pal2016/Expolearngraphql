@@ -8,7 +8,7 @@ import {
 import { LocalStorage } from "@/helpers/localstorage";
 
 const httpLink = new HttpLink({
-  uri: "https://nannie-unfenestral-preculturally.ngrok-free.dev/graphql",
+  uri: "https://unenvied-purge-freight.ngrok-free.dev/graphql",
 });
 
 const authLink = new ApolloLink((operation, forward) => {
