@@ -65,6 +65,11 @@ const typeDefs = gql`
     user: User
   }
 
+  type ForgotPasswordResponse {
+    success: Boolean!
+    message: String!
+  }
+
   input ChapterInput {
     chapterNumber: Int!
     title: String!
@@ -113,8 +118,8 @@ const typeDefs = gql`
     ): Book!
 
     addGenre(name: String!, value: String!): Genre!
-
     addLanguage(name: String!, value: String!): Language!
+    forgotpassword(email: String!): ForgotPasswordResponse!
   }
 `;
 

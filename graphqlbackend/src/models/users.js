@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-    profileImage: {
+  profileImage: {
     type: String,
     default: "",
   },
@@ -33,11 +33,20 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-   token: {
+  token: {
     type: String,
+    default: null,
+  },
+  resetPasswordToken: {
+    type: String,
+    default: null,
+  },
+
+  resetPasswordExpire: {
+    type: Date,
     default: null,
   },
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 module.exports = User;

@@ -75,8 +75,6 @@ const Login: FC = () => {
           const token = await getFCMToken();
           const addwihtfmcdta = { ...datas, fcmtoken: token };
           showLoader();
-          console.log(addwihtfmcdta);
-
           const { data } = (await loginUser({
             variables: addwihtfmcdta,
           })) as {
@@ -92,7 +90,6 @@ const Login: FC = () => {
             showError(response?.message);
           }
         } catch (error: any) {
-          console.log("ERROR FULL:", error);
           showError("Login Failed");
           if (error?.status === 500) {
             showError("Internal Server Error");

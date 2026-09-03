@@ -16,8 +16,6 @@ const bookStyles = (theme: any) =>
       paddingBottom: hp(4),
     },
 
-    /* ---------------- HEADER ---------------- */
-
     header: {
       height: hp(7),
       flexDirection: "row",
@@ -49,8 +47,6 @@ const bookStyles = (theme: any) =>
       fontSize: wp(5),
       color: "#111827",
     },
-
-    /* ---------------- BOOK ---------------- */
 
     bookSection: {
       flexDirection: "row",
@@ -128,11 +124,10 @@ const bookStyles = (theme: any) =>
       color: "#606779",
     },
 
-
     description: {
       ...Typography.BodyBold11,
       color: Colors.SECONDARY[400],
-      textAlign:'left'
+      textAlign: "left",
     },
 
     readMore: {
@@ -185,19 +180,16 @@ const bookStyles = (theme: any) =>
       flex: 1,
       height: hp(5.8),
       borderRadius: wp(2),
-      borderWidth: .6,
+      borderWidth: 0.6,
       borderColor: Colors.PRIMARY[200],
       justifyContent: "center",
       alignItems: "center",
-     
     },
 
     libraryButtonText: {
       ...Typography.BodyBold14,
       color: Colors.PRIMARY[100],
     },
-
-    /* ---------------- REVIEWS ---------------- */
 
     reviewHeader: {
       flexDirection: "row",
@@ -256,7 +248,7 @@ const bookStyles = (theme: any) =>
 
     reviewStars: {
       fontSize: wp(3),
-      color: "#F07401",
+      color: Colors.PRIMARY[100],
       letterSpacing: 1,
     },
 
@@ -286,8 +278,8 @@ const bookStyles = (theme: any) =>
       paddingHorizontal: 20,
       paddingVertical: 8,
       gap: 8,
-      flexDirection:'row',
-      justifyContent:'space-between'
+      flexDirection: "row",
+      justifyContent: "space-between",
     },
 
     tab: {
@@ -316,8 +308,6 @@ const bookStyles = (theme: any) =>
       ...Typography.BodyBold14,
     },
 
-    /* Books */
-
     booksContainer: {
       paddingHorizontal: 10,
       paddingTop: 10,
@@ -332,7 +322,6 @@ const bookStyles = (theme: any) =>
       marginBottom: 10,
       padding: 8,
       flexDirection: "row",
-
       shadowColor: "#000",
       shadowOffset: {
         width: 0,
@@ -340,7 +329,6 @@ const bookStyles = (theme: any) =>
       },
       shadowOpacity: 0.04,
       shadowRadius: 5,
-
       elevation: 2,
     },
 
@@ -390,8 +378,6 @@ const bookStyles = (theme: any) =>
       textAlign: "right",
     },
 
-
-
     continueButton: {
       width: 100,
       height: 22,
@@ -408,8 +394,6 @@ const bookStyles = (theme: any) =>
       ...Typography.BodyMedium13,
       textAlign: "center",
     },
-
-
 
     emptyContainer: {
       alignItems: "center",
@@ -429,8 +413,6 @@ const bookStyles = (theme: any) =>
       fontSize: 12,
       color: Colors.SECONDARY[500],
     },
-
-
 
     floatingButton: {
       position: "absolute",
@@ -529,8 +511,6 @@ const bookStyles = (theme: any) =>
       ...Typography.BodyBold13,
     },
 
-
-
     formContainer: {
       backgroundColor: Colors.SECONDARY[100],
       borderTopLeftRadius: 30,
@@ -580,8 +560,6 @@ const bookStyles = (theme: any) =>
       paddingVertical: 0,
     },
 
-
-
     descriptionContainer: {
       top: 10,
       minHeight: 95,
@@ -603,8 +581,6 @@ const bookStyles = (theme: any) =>
       color: "grey",
       textAlignVertical: "top",
     },
-
-
 
     twoColumn: {
       flexDirection: "row",
@@ -629,8 +605,6 @@ const bookStyles = (theme: any) =>
       color: "grey",
       marginLeft: 14,
     },
-
-  
 
     ratingContainer: {
       height: hp(6),
@@ -680,7 +654,6 @@ const bookStyles = (theme: any) =>
       ...Typography.BodyBold13,
       color: Colors.SECONDARY[500],
     },
-
 
     addButton: {
       height: 68,
@@ -789,219 +762,210 @@ const bookStyles = (theme: any) =>
       backgroundColor: "#E5E7EB",
       overflow: "hidden",
     },
-     scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 25,
-  },
-
-  /* ================= HEADER ================= */
-
-  header: {
-    height: 64,
-    paddingHorizontal: 20,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#FFFFFF",
-  },
-
-  headerButton: {
-    width: 40,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  headerTitle: {
-    fontSize: 17,
-    fontWeight: "700",
-    color: "#161616",
-  },
-
-  /* ================= BOOK INFO ================= */
-
-  bookInfo: {
-    flexDirection: "row",
-    marginTop: 13,
-    marginBottom: 27,
-    alignItems: "center",
-  },
-
-  bookCover: {
-    width: 94,
-    height: 127,
-    borderRadius: 5,
-    backgroundColor: "#E9E9E9",
-  },
-
-  bookDetails: {
-    flex: 1,
-    marginLeft: 20,
-    paddingVertical: 3,
-  },
-
-  bookTitle: {
-    fontSize: 19,
-    lineHeight: 25,
-    fontWeight: "700",
-    color: "#171717",
-    marginBottom: 7,
-  },
-
-  author: {
-    fontSize: 15,
-    color: "#64646D",
-    marginBottom: 17,
-  },
-
-  pageCount: {
-    fontSize: 15,
-    color: "#55555E",
-  },
-
-
-  tabLineContainer: {
-    height: 2,
-    backgroundColor: "#ECECF1",
-    position: "relative",
-    marginBottom: 29,
-  },
-
-  activeLine: {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    width: "50%",
-    height: 2,
-    backgroundColor: Colors.PRIMARY[100],
-  },
-
-  bookmarkActiveLine: {
-    left: "50%",
-  },
-
-  /* ================= CHAPTER LIST ================= */
-
-  chapterList: {
-    gap: 8,
-  },
-
-  chapterCard: {
-    minHeight: 92,
-    borderWidth: 1,
-    borderColor: "#E6E6EB",
-    borderRadius: 13,
-    paddingHorizontal: 18,
-    paddingVertical: 14,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#FFFFFF",
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 1,
+    scrollContent: {
+      paddingHorizontal: 20,
+      paddingBottom: 25,
     },
-    shadowOpacity: 0.03,
-    shadowRadius: 2,
 
-    elevation: 1,
-  },
+    /* ================= HEADER ================= */
 
-  activeChapterCard: {
-    backgroundColor: "#F0EDFF",
-    borderColor: "#E5DEFF",
-  },
+    header: {
+      height: 64,
+      paddingHorizontal: 20,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      backgroundColor: "#FFFFFF",
+    },
 
-  pressedCard: {
-    opacity: 0.75,
-  },
+    headerButton: {
+      width: 40,
+      height: 40,
+      alignItems: "center",
+      justifyContent: "center",
+    },
 
-  chapterContent: {
-    flex: 1,
-  },
+    headerTitle: {
+      fontSize: 17,
+      fontWeight: "700",
+      color: "#161616",
+    },
 
-  chapterTitle: {
-    ...Typography.BodyBold14,
-    color: Colors.SECONDARY[500],
-    marginBottom: 4,
-  },
+    /* ================= BOOK INFO ================= */
 
-  activeChapterTitle: {
-    color: "#1A1A1E",
-  },
+    bookInfo: {
+      flexDirection: "row",
+      marginTop: 13,
+      marginBottom: 27,
+      alignItems: "center",
+    },
 
-  chapterPages: {
-    fontSize: 14,
-    color: "#64646E",
-  },
+    bookCover: {
+      width: 94,
+      height: 127,
+      borderRadius: 5,
+      backgroundColor: "#E9E9E9",
+    },
 
-  activeChapterPages: {
-    color: "#4D4D72",
-  },
+    bookDetails: {
+      flex: 1,
+      marginLeft: 20,
+      paddingVertical: 3,
+    },
 
-  chapterIconContainer: {
-    width: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: 10,
-  },
+    bookTitle: {
+      fontSize: 19,
+      lineHeight: 25,
+      fontWeight: "700",
+      color: "#171717",
+      marginBottom: 7,
+    },
 
-  playCircle: {
-    width: 35,
-    height: 35,
-    borderRadius: 18,
-    borderWidth: 2,
-    borderColor: Colors.PRIMARY[100],
-    alignItems: "center",
-    justifyContent: "center",
-  },
+    author: {
+      fontSize: 15,
+      color: "#64646D",
+      marginBottom: 17,
+    },
 
+    pageCount: {
+      fontSize: 15,
+      color: "#55555E",
+    },
 
+    tabLineContainer: {
+      height: 2,
+      backgroundColor: "#ECECF1",
+      position: "relative",
+      marginBottom: 29,
+    },
 
+    activeLine: {
+      position: "absolute",
+      left: 0,
+      top: 0,
+      width: "50%",
+      height: 2,
+      backgroundColor: Colors.PRIMARY[100],
+    },
 
-  buttonPressed: {
-    opacity: 0.85,
-    transform: [{ scale: 0.99 }],
-  },
+    bookmarkActiveLine: {
+      left: "50%",
+    },
 
+    chapterList: {
+      gap: 8,
+    },
 
+    chapterCard: {
+      minHeight: 92,
+      borderWidth: 1,
+      borderColor: "#E6E6EB",
+      borderRadius: 13,
+      paddingHorizontal: 18,
+      paddingVertical: 14,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      backgroundColor: "#FFFFFF",
 
-  emptyBookmark: {
-    minHeight: 400,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 30,
-  },
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowOpacity: 0.03,
+      shadowRadius: 2,
 
-  bookmarkIconCircle: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: "#F0EDFF",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 18,
-  },
+      elevation: 1,
+    },
 
-  bookmarkTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#18181D",
-    marginBottom: 7,
-  },
+    activeChapterCard: {
+      backgroundColor: "#F0EDFF",
+      borderColor: "#E5DEFF",
+    },
 
-  bookmarkDescription: {
-    fontSize: 14,
-    color: "#777780",
-    textAlign: "center",
-    lineHeight: 21,
-  },
+    pressedCard: {
+      opacity: 0.75,
+    },
 
-  bottomSpace: {
-    height: 10,
-  },
+    chapterContent: {
+      flex: 1,
+    },
+
+    chapterTitle: {
+      ...Typography.BodyBold14,
+      color: Colors.SECONDARY[500],
+      marginBottom: 4,
+    },
+
+    activeChapterTitle: {
+      color: "#1A1A1E",
+    },
+
+    chapterPages: {
+      fontSize: 14,
+      color: "#64646E",
+    },
+
+    activeChapterPages: {
+      color: "#4D4D72",
+    },
+
+    chapterIconContainer: {
+      width: 40,
+      alignItems: "center",
+      justifyContent: "center",
+      marginLeft: 10,
+    },
+
+    playCircle: {
+      width: 35,
+      height: 35,
+      borderRadius: 18,
+      borderWidth: 2,
+      borderColor: Colors.PRIMARY[100],
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    buttonPressed: {
+      opacity: 0.85,
+      transform: [{ scale: 0.99 }],
+    },
+
+    emptyBookmark: {
+      minHeight: 400,
+      alignItems: "center",
+      justifyContent: "center",
+      paddingHorizontal: 30,
+    },
+
+    bookmarkIconCircle: {
+      width: 70,
+      height: 70,
+      borderRadius: 35,
+      backgroundColor: "#F0EDFF",
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: 18,
+    },
+
+    bookmarkTitle: {
+      fontSize: 18,
+      fontWeight: "700",
+      color: "#18181D",
+      marginBottom: 7,
+    },
+
+    bookmarkDescription: {
+      fontSize: 14,
+      color: "#777780",
+      textAlign: "center",
+      lineHeight: 21,
+    },
+
+    bottomSpace: {
+      height: 10,
+    },
   });
 
 export default bookStyles;

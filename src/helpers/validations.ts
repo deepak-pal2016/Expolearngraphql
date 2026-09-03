@@ -76,6 +76,12 @@ const AddbookvaliationSchema = Yup.object().shape({
 
   popular: Yup.boolean(),
 });
+const ForgotpasswordSchema = Yup.object().shape({
+  email: Yup.string()
+    .trim() // starting / ending spaces hata dega
+    .matches(emailRegex, "Please enter a valid email")
+    .required("Please enter email."),
+});
 
 export {
   SignInValidationSchema,
@@ -83,4 +89,5 @@ export {
   TaskSchema,
   TaskstatusSchema,
   AddbookvaliationSchema,
+  ForgotpasswordSchema,
 };

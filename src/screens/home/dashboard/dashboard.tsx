@@ -74,57 +74,6 @@ type BooksQueryData = {
   books: unknown[];
 };
 
-export const categories = [
-  {
-    id: 1,
-    title: "All",
-    value: "all",
-    isSelected: true,
-  },
-  {
-    id: 2,
-    title: "Fiction",
-    value: "fiction",
-    isSelected: false,
-  },
-  {
-    id: 3,
-    title: "Programming",
-    value: "programming",
-    isSelected: false,
-  },
-  {
-    id: 4,
-    title: "History",
-    value: "history",
-    isSelected: false,
-  },
-  {
-    id: 5,
-    title: "Business",
-    value: "business",
-    isSelected: false,
-  },
-  {
-    id: 6,
-    title: "Science",
-    value: "science",
-    isSelected: false,
-  },
-  {
-    id: 7,
-    title: "Biography",
-    value: "biography",
-    isSelected: false,
-  },
-  {
-    id: 8,
-    title: "Self Help",
-    value: "self_help",
-    isSelected: false,
-  },
-];
-
 const Dashboard: FC = () => {
   const { showLoader, hideLoader } = CommonLoader();
   const navigation = useNavigation<DashboardscreenNavigationType>();
@@ -188,8 +137,7 @@ const Dashboard: FC = () => {
           backgroundColor:
             theme === "dark" ? currentTheme?.background : Colors.PRIMARY[700],
         },
-      ]}
-    >
+      ]} >
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -204,8 +152,7 @@ const Dashboard: FC = () => {
               // paddingLeft: hp(2),
               flexDirection: "row",
               padding: hp(3),
-            }}
-          >
+            }} >
             <View style={{ flexDirection: "row" }}>
               <TextView style={styles.greeings}>
                 Hello, {`${user?.name}`}
@@ -230,8 +177,7 @@ const Dashboard: FC = () => {
           <View style={{ alignSelf: "center", bottom: hp(8) }}>
             <FloatingTextInput
               lefticon={Images.ic_search}
-              style={{ width: wp(88) }}
-              backcolor={Colors.PRIMARY[400]}
+              style={{ width: wp(88), backgroundColor: Colors.PRIMARY[400] }}
               placeholder="Search books, authors and genre.."
               //  touched={touched.password}
               //  error={errors.password}

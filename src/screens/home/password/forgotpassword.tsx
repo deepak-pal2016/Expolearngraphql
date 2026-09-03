@@ -36,73 +36,72 @@ import { AuthStackProps } from "src/@types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
-import { SignInValidationSchema } from "@helpers/validations";
+import { ForgotpasswordSchema } from "@helpers/validations";
 import { showError, showSuccess } from "@components/Flashmessge";
 import { LocalStorage } from "@helpers/localstorage";
+import { useMutation } from "@apollo/client/react";
+import { FORGOT_PASSWORD } from "@/services/queries/queriesservice";
 type ForgotpasswordNavigationType = NativeStackNavigationProp<
   AuthStackProps,
   "Forgotpassword"
 >;
 
+type ForgotPasswordMutationData = {
+  forgotpassword?: {
+    success?: boolean;
+    message?: string;
+  };
+};
+
+type ForgotPasswordMutationVariables = {
+  email: string;
+};
+
 const Forgotpassword: FC = () => {
-  // const [login, { data, error, isLoading }] = useLoginMutation();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<ForgotpasswordNavigationType>();
   const { showLoader, hideLoader } = CommonLoader();
   const { theme, themetoggle } = useContext(ThemeContext);
   const [isSecure, setIsSecure] = useState<boolean>(true);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
+  const [forgotpassword, { loading }] = useMutation<
+    ForgotPasswordMutationData,
+    ForgotPasswordMutationVariables
+  >(FORGOT_PASSWORD);
   const styles = loginStyles(currentTheme);
 
   const { values, errors, touched, handleSubmit, handleChange, setFieldValue } =
     useFormik({
-      validationSchema: SignInValidationSchema,
+      validationSchema: ForgotpasswordSchema,
       initialValues: {
-        email: "",
-        password: "",
+        email: "deepnodejs@gmail.com",
       },
-      onSubmit: async (data: any) => {
-        const token = await getfcmtoken();
-        const addwihtfmcdta = { ...data, fcmtoken: token };
+      onSubmit: async (value: any) => {
         showLoader();
-        // try {  rtk query code
-        //   const response: any = await login(addwihtfmcdta).unwrap();
-        //   console.log(response?.success, '==addwihtfmcdta==', response?.data);
-        //   if (response?.success === true) {
-        //     await LocalStorage.save('@user', response?.data);
-        //     await LocalStorage.save('@login', true);
-        //     setUserData(response?.data)
-        //     showSuccess('Login Successfully');
-        //   } else {
-        //     showError('Login Failed try again..');
-        //   }
-        // } catch (error: any) {
-        //   console.log(error, 'error==');
-        // } finally {
-        //   hideLoader();
-        // }
-       
+        try {
+          const { data } = await forgotpassword({
+            variables: { email: value?.email },
+          });
+          console.log(data,'data===');
+          
+          if (data?.forgotpassword?.success === true) {
+            showSuccess(
+              data?.forgotpassword?.message ||
+                "Password reset link generated send to your email successfully.",
+            );
+          } else {
+            showError(
+              data?.forgotpassword?.message || "something went wrong...",
+            );
+          }
+        } catch (error: any) {
+          hideLoader();
+          console.log(error, "error==");
+        } finally {
+          hideLoader();
+        }
       },
     });
-
-  // const getfcmtoken = async () => {
-  //   const app = getApp();
-  //   const messageingInstance = getMessaging(app);
-
-  //   const authstatus = await requestPermission(messageingInstance);
-  //   const enabled = authstatus === 1 || authstatus === 2;
-  //   if (!enabled) {
-  //     console.log('permission not granted');
-  //     return;
-  //   }
-
-  //   const token = await getToken(messageingInstance);
-  //   return token;
-
-  //   // onTokenRefresh(messageingInstance, newtoken => {
-  //   //   console.log('refresh token', newtoken);
-  //   // });
-  // };
 
   return (
     <TouchableWithoutFeedback>
@@ -117,9 +116,18 @@ const Forgotpassword: FC = () => {
         extraScrollHeight={hp(1)}
         showsVerticalScrollIndicator={false}
       >
-           <Header showheader={true} showicons={false} />
-        <ImageBackground style={{width:'100%', height:'100%',  }} resizeMode='cover' source={Images.ic_passwordimg}>
-          <View style={[styles.container, { paddingTop: insets.top , bottom:hp(3)}]}>
+        <Header showheader={true} showicons={false} />
+        <ImageBackground
+          style={{ width: "100%", height: "100%" }}
+          resizeMode="cover"
+          source={Images.ic_passwordimg}
+        >
+          <View
+            style={[
+              styles.container,
+              { paddingTop: insets.top, bottom: hp(3) },
+            ]}
+          >
             <Image source={Images.ic_logo} style={styles.logostyles} />
             <View
               style={{
@@ -135,7 +143,8 @@ const Forgotpassword: FC = () => {
                 style={[
                   styles.apptitle,
                   { ...Typography.BodyRegular12, textAlign: "left" },
-                ]}>
+                ]}
+              >
                 Enter your email and we'll send you a link {"\n"}to reset your
                 password.
               </TextView>

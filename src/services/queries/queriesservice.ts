@@ -50,3 +50,12 @@ export const GET_BOOKS = gql`
     }
   }
 `;
+
+export const FORGOT_PASSWORD = gql`
+  mutation Forgotpassword($email: String!) {
+    forgotpassword(email: $email) {
+      success
+      message
+    }
+  }
+`;
