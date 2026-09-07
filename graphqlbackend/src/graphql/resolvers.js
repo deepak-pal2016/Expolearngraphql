@@ -36,6 +36,73 @@ const resolvers = {
     },
   },
   Mutation: {
+    verifyotp: async (_, { email, otp }) => {
+      try {
+        const user = await User.findOne({ email });
+
+        console.log("========== OTP DEBUG ==========");
+        console.log("Email:", email);
+        console.log("Received OTP:", otp);
+        console.log("Received OTP type:", typeof otp);
+        console.log("DB OTP:", user?.resetPasswordOtp);
+        console.log("DB OTP type:", typeof user?.resetPasswordOtp);
+        console.log(
+          "OTP Match:",
+          String(user?.resetPasswordOtp) === String(otp),
+        );
+        console.log("DB OTP Expire:", user?.resetPasswordOtpExpire);
+        console.log("Current Time:", new Date());
+        console.log(
+          "Expired:",
+          user?.resetPasswordOtpExpire
+            ? user.resetPasswordOtpExpire < new Date()
+            : "NO EXPIRY",
+        );
+        console.log("==============================");
+
+        if (!user) {
+          return {
+            success: false,
+            message: "User not found",
+          };
+        }
+
+        if (String(user.resetPasswordOtp) !== String(otp)) {
+          return {
+            success: false,
+            message: "Invalid otp",
+          };
+        }
+
+        if (
+          !user.resetPasswordOtpExpire ||
+          user.resetPasswordOtpExpire < new Date()
+        ) {
+          return {
+            success: false,
+            message: "OTP has expired",
+          };
+        }
+
+        user.resetPasswordOtp = null;
+        user.resetPasswordOtpExpire = null;
+
+        await user.save();
+
+        return {
+          success: true,
+          message: "OTP verified successfully",
+        };
+      } catch (error) {
+        console.log("Verify OTP Error:", error);
+
+        return {
+          success: false,
+          message: "Something went wrong",
+        };
+      }
+    },
+
     loginUser: async (_, { email, password, fcmtoken }) => {
       try {
         if (!email || !password) {
@@ -251,6 +318,7 @@ const resolvers = {
         throw new Error("Failed to add book");
       }
     },
+
     forgotpassword: async (_, { email }) => {
       try {
         const useremail = await User.findOne({ email });
@@ -262,68 +330,188 @@ const resolvers = {
           };
         }
 
-        const resetToken = crypto.randomBytes(32).toString("hex");
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpexpiry = new Date(Date.now() + 10 * 60 * 1000);
 
-        const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000);
-
-        useremail.resetPasswordToken = resetToken;
-        useremail.resetPasswordExpire = resetTokenExpiry;
+        useremail.resetPasswordOtp = otp;
+        useremail.resetPasswordOtpExpire = otpexpiry;
         await useremail.save();
 
-        const resetlink = `https://unenvied-purge-freight.ngrok-free.dev/reset-password?token=${resetToken}`;
-        console.log("RESET LINK:", resetlink);
-        console.log("EMAIL_USER:", process.env.EMAIL_USER);
-        console.log("EMAIL_PASS EXISTS:", process.env.EMAIL_PASS);
-        console.log("Sending mail to:", email);
         await transporter.sendMail({
           from: process.env.EMAIL_USER,
           to: email,
-          subject: "BookVerse - Reset Your Password",
+          subject: "BookVerse - Password Reset OTP",
+
           html: `
-        <div style="font-family: Arial, sans-serif;">
-          <h2>Reset Your BookVerse Password</h2>
+          <div style="
+            margin: 0;
+            padding: 40px 20px;
+            background-color: #f5f5f5;
+            font-family: Arial, Helvetica, sans-serif;
+          ">
 
-          <p>Hello ${useremail.name || "User"},</p>
+            <div style="
+              max-width: 500px;
+              margin: 0 auto;
+              background-color: #ffffff;
+              border-radius: 16px;
+              overflow: hidden;
+              box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            ">
 
-          <p>
-            We received a request to reset your BookVerse password.
-          </p>
+              <!-- Orange Header -->
+              <div style="
+                background-color: #f17601;
+                padding: 28px 20px;
+                text-align: center;
+              ">
+                <h1 style="
+                  margin: 0;
+                  color: #ffffff;
+                  font-size: 26px;
+                  font-weight: bold;
+                ">
+                  BookVerse
+                </h1>
 
-          <p>
-            Click the button below to reset your password:
-          </p>
+                <p style="
+                  margin: 8px 0 0;
+                  color: #ffffff;
+                  font-size: 14px;
+                ">
+                  Password Reset
+                </p>
+              </div>
 
-          <a
-            href="${resetlink}"
-            style="
-              display:inline-block;
-              padding:12px 20px;
-              background:#000;
-              color:#fff;
-              text-decoration:none;
-              border-radius:6px;
-            "
-          >
-            Reset Password
-          </a>
+              <!-- Card Content -->
+              <div style="
+                padding: 30px;
+              ">
 
-          <p>
-            This link will expire in 15 minutes.
-          </p>
+                <h2 style="
+                  margin: 0 0 15px;
+                  color: #222222;
+                  font-size: 22px;
+                ">
+                  Reset Your Password
+                </h2>
 
-          <p>
-            If you did not request a password reset, you can safely ignore
-            this email.
-          </p>
+                <p style="
+                  color: #555555;
+                  font-size: 15px;
+                  line-height: 1.6;
+                  margin: 0 0 10px;
+                ">
+                  Hello <strong>${useremail.name || "User"}</strong>,
+                </p>
 
-          <p>Thanks,<br/>BookVerse Team</p>
-        </div>
-      `,
+                <p style="
+                  color: #555555;
+                  font-size: 15px;
+                  line-height: 1.6;
+                  margin: 0 0 20px;
+                ">
+                  We received a request to reset your BookVerse password.
+                  Use the OTP below to continue.
+                </p>
+
+                <!-- OTP Box -->
+                <div style="
+                  background-color: #fff4e8;
+                  border: 1px solid #ffd4ad;
+                  border-radius: 12px;
+                  padding: 22px 15px;
+                  text-align: center;
+                  margin: 25px 0;
+                ">
+
+                  <p style="
+                    margin: 0 0 10px;
+                    color: #777777;
+                    font-size: 13px;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                  ">
+                    Your OTP
+                  </p>
+
+                  <div style="
+                    font-size: 34px;
+                    font-weight: bold;
+                    letter-spacing: 10px;
+                    color: #f17601;
+                    padding-left: 10px;
+                  ">
+                    ${otp}
+                  </div>
+
+                </div>
+
+                <p style="
+                  text-align: center;
+                  color: #666666;
+                  font-size: 14px;
+                  margin: 0 0 25px;
+                ">
+                  This OTP will expire in
+                  <strong style="color:#f17601;">10 minutes</strong>.
+                </p>
+
+                <!-- Security Message -->
+                <div style="
+                  background-color: #fafafa;
+                  border-radius: 8px;
+                  padding: 15px;
+                  margin-bottom: 25px;
+                ">
+                  <p style="
+                    margin: 0;
+                    color: #777777;
+                    font-size: 13px;
+                    line-height: 1.5;
+                  ">
+                    🔒 If you did not request a password reset, you can safely
+                    ignore this email. Your account remains secure.
+                  </p>
+                </div>
+
+                <p style="
+                  color: #555555;
+                  font-size: 14px;
+                  line-height: 1.5;
+                  margin: 0;
+                ">
+                  Thanks,<br/>
+                  <strong style="color:#f17601;">BookVerse Team</strong>
+                </p>
+
+              </div>
+
+              <!-- Footer -->
+              <div style="
+                background-color: #fafafa;
+                border-top: 1px solid #eeeeee;
+                padding: 15px;
+                text-align: center;
+              ">
+                <p style="
+                  margin: 0;
+                  color: #999999;
+                  font-size: 12px;
+                ">
+                  © ${new Date().getFullYear()} BookVerse. All rights reserved.
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+        `,
         });
 
         return {
           success: true,
-          message: "Password reset link sent successfully.",
+          message: "OTP sent on your email successfully.",
         };
       } catch (error) {
         console.log("Forgot Password Error:", error);

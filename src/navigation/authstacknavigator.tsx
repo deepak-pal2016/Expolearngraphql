@@ -1,6 +1,13 @@
 import React, { FC } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Forgotpassword, Login, Signup, Splash } from "@screens/index";
+import {
+  Forgotpassword,
+  Login,
+  Signup,
+  Splash,
+  OTPVerify,
+  Resetpassword,
+} from "@screens/index";
 import { AuthStackProps } from "src/@types";
 
 const Authstacknavigator: FC = () => {
@@ -8,10 +15,15 @@ const Authstacknavigator: FC = () => {
   return (
     <>
       <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-        <AuthStack.Screen name="Splash" component={Splash as React.ComponentType<any>} />
+        <AuthStack.Screen
+          name="Splash"
+          component={Splash as React.ComponentType<any>}
+        />
         <AuthStack.Screen name="Login" component={Login} />
         <AuthStack.Screen name="Signup" component={Signup} />
         <AuthStack.Screen name="Forgotpassword" component={Forgotpassword} />
+        <AuthStack.Screen name="OTPVerify" component={OTPVerify} />
+          <AuthStack.Screen name="Resetpassword" component={Resetpassword} />
       </AuthStack.Navigator>
     </>
   );

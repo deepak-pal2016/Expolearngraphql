@@ -3,6 +3,8 @@ export type AuthStackProps = {
   Splash:undefined;
   Signup:undefined;
   Forgotpassword:undefined;
+  OTPVerify:{}
+  Resetpassword:{};
   //   Splash:undefined,
 };
 

@@ -36,6 +36,7 @@
     "react-native-flash-message": "^0.4.2",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-modal": "^14.0.0-rc.1",
+    "react-native-otp-textinput": "^1.1.7",
     "react-native-responsive-screen": "^1.4.2",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",

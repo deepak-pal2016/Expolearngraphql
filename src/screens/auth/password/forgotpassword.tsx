@@ -82,13 +82,13 @@ const Forgotpassword: FC = () => {
           const { data } = await forgotpassword({
             variables: { email: value?.email },
           });
-          console.log(data,'data===');
-          
+
           if (data?.forgotpassword?.success === true) {
             showSuccess(
               data?.forgotpassword?.message ||
-                "Password reset link generated send to your email successfully.",
+                "OTP Sent successsfully on your email..",
             );
+            navigation.navigate("OTPVerify",{'email': value?.email});
           } else {
             showError(
               data?.forgotpassword?.message || "something went wrong...",
@@ -145,7 +145,7 @@ const Forgotpassword: FC = () => {
                   { ...Typography.BodyRegular12, textAlign: "left" },
                 ]}
               >
-                Enter your email and we'll send you a link {"\n"}to reset your
+                Enter your email and we'll send you OTP {"\n"}to reset your
                 password.
               </TextView>
             </View>

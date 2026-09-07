@@ -65,6 +65,11 @@ const typeDefs = gql`
     user: User
   }
 
+  type VerifyOtpResponse {
+    success: Boolean!
+    message: String!
+  }
+
   type ForgotPasswordResponse {
     success: Boolean!
     message: String!
@@ -120,6 +125,7 @@ const typeDefs = gql`
     addGenre(name: String!, value: String!): Genre!
     addLanguage(name: String!, value: String!): Language!
     forgotpassword(email: String!): ForgotPasswordResponse!
+    verifyotp(email: String!, otp: String!): VerifyOtpResponse!
   }
 `;
 

@@ -59,3 +59,12 @@ export const FORGOT_PASSWORD = gql`
     }
   }
 `;
+
+export const VERIFY_OTP = gql`
+  mutation VerifyOtp($email: String!, $otp: String!) {
+    verifyotp(email: $email, otp: $otp) {
+      success
+      message
+    }
+  }
+`;
