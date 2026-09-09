@@ -1,10 +1,12 @@
-import React, { FC, useContext, useState } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
 import {
   TouchableWithoutFeedback,
   View,
   Image,
   ImageBackground,
   Keyboard,
+  Pressable,
+  TouchableOpacity,
 } from "react-native";
 import OTPTextInput from "react-native-otp-textinput";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -30,7 +32,7 @@ import { AuthStackProps } from "src/@types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { showError, showSuccess } from "@/components/Flashmessge";
-import { VERIFY_OTP } from "@/services/queries/queriesservice";
+import { FORGOT_PASSWORD, VERIFY_OTP } from "@/services/queries/queriesservice";
 import { useMutation } from "@apollo/client/react";
 
 type OTPVerifydNavigationType = NativeStackNavigationProp<
@@ -38,23 +40,81 @@ type OTPVerifydNavigationType = NativeStackNavigationProp<
   "OTPVerify"
 >;
 
-type VerifyOtpResponse = { verifyotp: { success: boolean; message: string; }; }; type VerifyOtpVariables = { email: string; otp: string; };
+type ForgotPasswordMutationData = {
+  forgotpassword?: {
+    success?: boolean;
+    message?: string;
+  };
+};
+
+type ForgotPasswordMutationVariables = {
+  email: string;
+};
+
+type VerifyOtpResponse = { verifyotp: { success: boolean; message: string } };
+type VerifyOtpVariables = { email: string; otp: string };
 
 const OTPVerify: FC = () => {
   const insets = useSafeAreaInsets();
   const [otp, setOtp] = useState("");
-   const { showLoader, hideLoader } = CommonLoader();
+  const { showLoader, hideLoader } = CommonLoader();
   const { theme, themetoggle } = useContext(ThemeContext);
   const currentTheme = theme === "light" ? LightTheme : DarkTheme;
   const styles = loginStyles(currentTheme);
   const route: any = useRoute();
   const navigation = useNavigation<OTPVerifydNavigationType>();
+  const [timer, setTimer] = useState<number>(60);
+  const [forgotpassword] = useMutation<
+    ForgotPasswordMutationData,
+    ForgotPasswordMutationVariables
+  >(FORGOT_PASSWORD);
   const [verifyotp, { loading }] = useMutation<
     VerifyOtpResponse,
     VerifyOtpVariables
   >(VERIFY_OTP);
-
   const { email } = route.params;
+
+  useEffect(() => {
+    const Interval = setInterval(() => {
+      setTimer((prev:any) => {
+        if(prev < 1){
+          clearInterval(Interval);
+          return 0;
+        }
+        return  prev - 1;
+      })
+    },1000)
+    return () => clearInterval(Interval);
+  },[])
+
+  const resendopt = async () => {
+    if (timer > 0) {
+      return;
+    }
+    try {
+      showLoader();
+      try {
+        const { data } = await forgotpassword({
+          variables: {  email },
+        });
+
+        if (data?.forgotpassword?.success === true) {
+          showSuccess(
+            data?.forgotpassword?.message ||
+              "OTP Sent successsfully on your email..",
+          );
+          setTimer(60);
+        } else {
+          showError(data?.forgotpassword?.message || "something went wrong...");
+        }
+      } catch (error: any) {
+        hideLoader();
+        console.log(error, "error==");
+      } finally {
+        hideLoader();
+      }
+    } catch (err: any) {}
+  };
 
   const verifyOtp = async () => {
     Keyboard.dismiss();
@@ -72,11 +132,9 @@ const OTPVerify: FC = () => {
       });
 
       console.log(data, "verifyyotp");
-      showLoader()
+      showLoader();
       if (data?.verifyotp?.success) {
-        showSuccess(
-          data.verifyotp.message || "OTP verified successfully",
-        );
+        showSuccess(data.verifyotp.message || "OTP verified successfully");
         navigation.navigate("Resetpassword", { email: email });
       } else {
         showError(data?.verifyotp?.message || "Invalid OTP");
@@ -84,9 +142,8 @@ const OTPVerify: FC = () => {
     } catch (err: any) {
       console.log(err, "verify otp error");
       showError("Something went wrong");
-    }
-    finally{
-        hideLoader()
+    } finally {
+      hideLoader();
     }
   };
 
@@ -170,6 +227,34 @@ const OTPVerify: FC = () => {
                 // Colors.PRIMARY[300],
               ]}
             />
+
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: hp(2),
+              }}
+            >
+              <TextView
+                style={{
+                  color: Colors.SECONDARY[400],
+                  ...Typography.BodyBold12,
+                }}
+              >
+                Didn't receive the code?{" "}
+              </TextView>
+              <TouchableOpacity activeOpacity={0.7} onPress={() => resendopt()}>
+                <TextView
+                  style={{
+                    color: Colors.PRIMARY[100],
+                    ...Typography.BodyBold13,
+                  }}
+                >
+                  {`Resend ${timer === 0 ? "OTP" : `in ${timer}s`}`}
+                </TextView>
+              </TouchableOpacity>
+            </View>
           </View>
         </ImageBackground>
       </KeyboardAwareScrollView>

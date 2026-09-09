@@ -20,8 +20,8 @@ const styles = (theme:any) => StyleSheet.create({
         elevation: 5,
     },
     input: {
-       bottom:hp(.0),
-        color: Colors.SECONDARY[200],
+       bottom:hp(.3),
+        color: Colors.SECONDARY[400],
         ...Typography.H1Bold30,
         paddingHorizontal: hp(5),
         borderRadius: hp(1),
