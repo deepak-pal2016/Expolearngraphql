@@ -101,7 +101,7 @@ const OTPVerify: FC = () => {
         if (data?.forgotpassword?.success === true) {
           showSuccess(
             data?.forgotpassword?.message ||
-              "OTP Sent successsfully on your email..",
+              "OTP sent successsfully on your email..",
           );
           setTimer(60);
         } else {
