@@ -68,3 +68,34 @@ export const VERIFY_OTP = gql`
     }
   }
 `;
+
+export const CHANGE_PASSWORD = gql`
+  mutation ChangePassword($email: String!, $password: String!) {
+    changepassword(email: $email, password: $password) {
+      success
+      message
+    }
+  }
+`;
+
+export const SEARCH_BOOK = gql`
+  query SearchBooks($query: String!) {
+    searchBooks(query: $query) {
+      id
+      title
+      author
+      description
+      coverimage
+      genre
+      language
+      isbn
+      publisher
+      publishedDate
+      pages
+      rating
+      totalreviews
+      isTrending
+      isPopular
+    }
+  }
+`;

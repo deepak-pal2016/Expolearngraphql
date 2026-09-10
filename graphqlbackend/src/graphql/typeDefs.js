@@ -74,6 +74,10 @@ const typeDefs = gql`
     success: Boolean!
     message: String!
   }
+  type ChangePasswordResponse {
+    success: Boolean!
+    message: String!
+  }
 
   input ChapterInput {
     chapterNumber: Int!
@@ -87,6 +91,7 @@ const typeDefs = gql`
     genres: [Genre!]!
     languages: [Language!]!
     books: [Book]
+    searchBooks(query: String!): [Book!]!
   }
 
   type Mutation {
@@ -126,6 +131,7 @@ const typeDefs = gql`
     addLanguage(name: String!, value: String!): Language!
     forgotpassword(email: String!): ForgotPasswordResponse!
     verifyotp(email: String!, otp: String!): VerifyOtpResponse!
+    changepassword(email: String!, password: String!): ChangePasswordResponse!
   }
 `;
 

@@ -20,7 +20,8 @@ const Images = {
   ic_search:require("@assets/icons/search.png"),
   ic_passwordimg:require('@assets/images/passwordimg.png'),
   ic_description:require('@assets/icons/description.png'),
-  ic_genre:require('@assets/icons/genre.png')
+  ic_genre:require('@assets/icons/genre.png'),
+  ic_mic:require('@assets/icons/mic.png')
 };
 
 export default Images;

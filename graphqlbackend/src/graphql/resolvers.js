@@ -34,22 +34,70 @@ const resolvers = {
     books: async () => {
       return await Book.find();
     },
+    searchBooks: async (_, { query }) => {
+      if (!query || !query.trim()) {
+        return [];
+      }
+
+      const searchText = query.trim();
+      const bookddd = await Book.find({
+        $or: [
+          { title: { $regex: searchText, $options: "i" } },
+          { author: { $regex: searchText, $options: "i" } },
+          { genre: { $regex: searchText, $options: "i" } },
+          { language: { $regex: searchText, $options: "i" } },
+          { publisher: { $regex: searchText, $options: "i" } },
+          { isbn: { $regex: searchText, $options: "i" } },
+        ],
+      });
+
+      return bookddd;
+    },
   },
   Mutation: {
+    changepassword: async (_, { email, password }) => {
+      try {
+        const user = await User.findOne({ email });
+
+        if (!user) {
+          return {
+            success: false,
+            message: "User not found",
+          };
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+        await user.save();
+
+        return {
+          success: true,
+          message: "Password changed successfully",
+        };
+      } catch (error) {
+        console.log("Change Password Error:", error);
+
+        return {
+          success: false,
+          message: "Something went wrong",
+        };
+      }
+    },
+
     verifyotp: async (_, { email, otp }) => {
       try {
         const user = await User.findOne({ email });
 
-        console.log("========== OTP DEBUG ==========");
-        console.log("Email:", email);
-        console.log("Received OTP:", otp);
-        console.log("Received OTP type:", typeof otp);
-        console.log("DB OTP:", user?.resetPasswordOtp);
-        console.log("DB OTP type:", typeof user?.resetPasswordOtp);
-        console.log(
-          "OTP Match:",
-          String(user?.resetPasswordOtp) === String(otp),
-        );
+        // console.log("========== OTP DEBUG ==========");
+        // console.log("Email:", email);
+        // console.log("Received OTP:", otp);
+        // console.log("Received OTP type:", typeof otp);
+        // console.log("DB OTP:", user?.resetPasswordOtp);
+        // console.log("DB OTP type:", typeof user?.resetPasswordOtp);
+        // console.log(
+        //   "OTP Match:",
+        //   String(user?.resetPasswordOtp) === String(otp),
+        // );
         console.log("DB OTP Expire:", user?.resetPasswordOtpExpire);
         console.log("Current Time:", new Date());
         console.log(

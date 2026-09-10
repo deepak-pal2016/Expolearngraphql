@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { FC, useRef } from 'react';
+import React, { FC, useRef } from "react";
 import {
   Text,
   TextInput,
@@ -14,18 +14,19 @@ import {
   KeyboardTypeOptions,
   Appearance,
   ImageProps,
-} from 'react-native';
-import { TextView } from '@components/index';
-import createstyles from '../floattextinput/styles';
+  Pressable,
+} from "react-native";
+import { TextView } from "@components/index";
+import createstyles from "../floattextinput/styles";
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
-} from '@constant/dimentions';
-import { Colors, Images, Typography } from '@constant/index';
-import { FormikErrors, FormikTouched } from 'formik';
-import { useContext } from 'react';
-import { ThemeContext } from '../../../context/themeContext';
-import { LightTheme, DarkTheme } from '@components/index';
+} from "@constant/dimentions";
+import { Colors, Images, Typography } from "@constant/index";
+import { FormikErrors, FormikTouched } from "formik";
+import { useContext } from "react";
+import { ThemeContext } from "../../../context/themeContext";
+import { LightTheme, DarkTheme } from "@components/index";
 
 const colorscheme = Appearance.getColorScheme();
 
@@ -43,10 +44,12 @@ interface TextInputProps {
   touched?: FormikTouched<boolean> | any;
   keyboardType?: KeyboardTypeOptions | undefined;
   maxLength?: number;
-  pointerEvents?: 'box-none' | 'none' | 'box-only' | 'auto' | undefined;
+  pointerEvents?: "box-none" | "none" | "box-only" | "auto" | undefined;
   isMultiline?: boolean;
   lefticon?: ImageProps;
   placeholder?: string;
+  righticon?: ImageProps;
+  onPress?: () => void;
 }
 
 const FloatingTextInput: FC<TextInputProps> = ({
@@ -67,11 +70,13 @@ const FloatingTextInput: FC<TextInputProps> = ({
   isMultiline,
   placeholder,
   lefticon,
+  righticon,
+  onPress,
 }) => {
   const inputRef = useRef<TextInput>(null);
   const animatedValue = useRef(new Animated.Value(0));
   const { theme } = useContext(ThemeContext);
-  const currentTheme = theme === 'light' ? LightTheme : DarkTheme;
+  const currentTheme = theme === "light" ? LightTheme : DarkTheme;
 
   const styles = createstyles(currentTheme);
   const returnAnimatedTitleStyles = {
@@ -80,7 +85,7 @@ const FloatingTextInput: FC<TextInputProps> = ({
         translateY: animatedValue?.current?.interpolate({
           inputRange: [0, 1],
           outputRange: [value ? 3 : 22, 0],
-          extrapolate: 'clamp',
+          extrapolate: "clamp",
         }),
       },
     ],
@@ -109,7 +114,7 @@ const FloatingTextInput: FC<TextInputProps> = ({
     <View style={[style, { marginTop: hp(2) }]}>
       <TextView style={styles.floatlable}>
         {label}
-        {isRequired && <TextView style={{ color: 'red' }}> *</TextView>}
+        {isRequired && <TextView style={{ color: "red" }}> *</TextView>}
       </TextView>
       <View
         style={[
@@ -153,15 +158,43 @@ const FloatingTextInput: FC<TextInputProps> = ({
             />
           </View>
         )}
+
+        {righticon && (
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={onPress}
+            style={{
+              position: "absolute",
+              right: wp(2),
+              top: 0,
+              width: wp(10),
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 10,
+              // elevation: 10,
+            }}
+          >
+            <Image
+              source={righticon}
+              style={{
+                tintColor: Colors.PRIMARY[100],
+                width: wp(5.5),
+                height: hp(2.8),
+              }}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        )}
+
         <TextInput
           style={[
             styles.input,
-            {textAlignVertical:'top'},
+            { textAlignVertical: "top", bottom: 3 },
             onSecureTextPress && {
               width: wp(80),
               height: isMultiline ? hp(20) : hp(5),
               paddingHorizontal: hp(5),
-
             },
             {
               ...(editable === false && {
@@ -178,7 +211,7 @@ const FloatingTextInput: FC<TextInputProps> = ({
           autoCapitalize="none"
           autoCorrect={false}
           placeholderTextColor={
-            colorscheme === 'dark'
+            colorscheme === "dark"
               ? Colors.FLOATINGINPUT[100]
               : Colors.FLOATINGINPUT[200]
           }

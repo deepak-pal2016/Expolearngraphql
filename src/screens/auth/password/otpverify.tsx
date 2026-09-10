@@ -131,7 +131,6 @@ const OTPVerify: FC = () => {
         },
       });
 
-      console.log(data, "verifyyotp");
       showLoader();
       if (data?.verifyotp?.success) {
         showSuccess(data.verifyotp.message || "OTP verified successfully");
@@ -198,7 +197,6 @@ const OTPVerify: FC = () => {
                 inputCellLength={1}
                 handleTextChange={(value) => {
                   setOtp(value);
-                  console.log("OTP:", value);
                 }}
                 tintColor={Colors.PRIMARY[100]}
                 offTintColor={Colors.PRIMARY[100]}

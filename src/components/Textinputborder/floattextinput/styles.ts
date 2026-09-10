@@ -20,12 +20,12 @@ const styles = (theme:any) => StyleSheet.create({
         elevation: 5,
     },
     input: {
-       bottom:hp(.3),
+       bottom:hp(.1),
         color: Colors.SECONDARY[400],
         ...Typography.H1Bold30,
         paddingHorizontal: hp(5),
         borderRadius: hp(1),
-        textAlignVertical:'center'
+        textAlignVertical:'center',
     },
     labelContainer: {
         position: 'absolute',
