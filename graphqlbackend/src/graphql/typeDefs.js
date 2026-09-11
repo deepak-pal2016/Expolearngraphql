@@ -95,6 +95,8 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    askBook(question: String!): String!
+
     loginUser(
       email: String!
       password: String!

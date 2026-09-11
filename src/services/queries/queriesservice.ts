@@ -99,3 +99,8 @@ export const SEARCH_BOOK = gql`
     }
   }
 `;
+
+export const ASK_BOOK_AI = gql`
+mutation AskBookAI($question:String!){
+  askBookAI(question:$question)
+}`

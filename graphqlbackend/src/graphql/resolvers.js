@@ -6,6 +6,7 @@ const Genre = require("../models/genre");
 const Language = require("../models/language");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const askBookAI = require("../services/service");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -55,6 +56,12 @@ const resolvers = {
     },
   },
   Mutation: {
+    askBook: async (_, { question }) => {
+      const answer = await askBookAI(question);
+
+      return answer;
+    },
+
     changepassword: async (_, { email, password }) => {
       try {
         const user = await User.findOne({ email });
